@@ -21,12 +21,17 @@ serviço.
 > escritório como **plano de fundo de toda nova aba** no Chrome, Edge, Brave e Vivaldi. Veja
 > [Extensão para o navegador](#extensão-para-o-navegador-nova-aba).
 
-## O que já funciona (protótipo)
+## O que já funciona
+
+- **Dados reais do Docker:** descoberta, eventos (start/stop/die/health/oom…), CPU e RAM de cada
+  container, ao vivo no navegador. Sem backend acessível, abre em **modo demonstração** com dados simulados.
 
 - Escritório único em 3D (Three.js): baias individuais com divisórias, copa com sofá e TV, café,
   bebedouro, estante, quadro branco, impressora, janelas com vista da cidade, relógio com a hora real e
   pôsteres de papel da cultura dev nas paredes.
-- **32 personagens** gerados em código, sem assets externos. Cada um tem roupa, acessório, mesa e decoração.
+- **34 personagens** gerados em código, sem assets externos. Cada um tem roupa, acessório, mesa e decoração.
+  Container sem perfil ganha um **funcionário novo** com visual fixo, calculado a partir do nome. A label
+  `docker-office.character=<id>` escolhe o personagem manualmente.
 - Comportamento por estado:
   - **ocioso:** café, janela, conversa, manias do perfil;
   - **trabalhando:** digita;
@@ -44,19 +49,33 @@ serviço.
   para seguir o personagem.
 - **Papel de parede do navegador:** `?wallpaper=1` tira a interface e gira a câmera devagar a 20 FPS. A
   extensão em [`extras/newtab-extension`](extras/newtab-extension) coloca isso em toda nova aba.
+- **Busca** (atalho `/`): digite o nome e a câmera vai até o personagem.
+- **Avisos:** notificação do navegador quando um container entra em erro (opcional; no máximo 1 a cada
+  2 min por container).
+- **Dia e noite:** a vista da janela e a luz seguem a hora local (`?time=day|night` força um dos dois).
 - **Detalhes no hover:** estado Docker, uptime, CPU, RAM, reinícios, código de saída, imagem, portas e
   último evento.
 
-> **Estado atual:** o frontend roda com **dados simulados** (`web/src/demo/mock.ts`). O backend que lê o
-> Docker de verdade (descoberta, eventos, métricas e WebSocket) é a próxima etapa.
+### Como o estado é decidido
+
+| Estado | Quando |
+|---|---|
+| **erro** | `dead`, OOM, `unhealthy`, reiniciando sem parar (≥ 3 reinícios em 5 min) ou saiu com código ≠ 0 sem ninguém mandar parar |
+| **parado** | parado por `docker stop`/`kill`, terminou com exit 0, criado e nunca iniciado, ou pausado |
+| **ocupado** | CPU ≥ 70% por 3 amostras seguidas (só sai com < 50% por 3) ou memória ≥ 90% do limite |
+| **trabalhando** | rodando, sem nada acima |
+
+Quando o Docker Engine cai, as luzes do escritório apagam. O backend tenta reconectar sozinho (1 s → 30 s) e
+não perde o que aconteceu no meio: reabre os eventos com `since` e reconcilia a lista.
 
 ## Roadmap
 
-1. Protocolo WebSocket + servidor mock no mesmo protocolo
-2. Backend Docker: descoberta, eventos (start/stop/die/health) e classificação de estado
-3. Métricas (CPU/RAM via stats em stream) e estado "ocupado" com histerese
-4. Resiliência: reconexão ao Engine, reconciliação e status "reconectando"
-5. Deploy containerizado com docker-socket-proxy e token na LAN
+- [x] Backend Docker: descoberta, eventos, métricas, estado "ocupado" com histerese
+- [x] Resiliência: reconexão ao Engine, reconciliação e status "reconectando"
+- [x] Deploy containerizado com docker-socket-proxy e token
+- [ ] Agrupar personagens por label (`docker-office.room`)
+- [ ] Histórico curto de métricas no servidor (hoje o gráfico começa ao abrir a página)
+- [ ] Vários hosts Docker no mesmo escritório
 
 ## Como rodar
 
@@ -64,13 +83,21 @@ Requer Node.js ≥ 22.
 
 ```sh
 npm install
-npm run dev          # compila o TypeScript e sobe o servidor estático
+npm run dev          # compila o frontend e sobe o servidor, lendo o Docker local
+npm run demo         # mesmo servidor, mas com dados simulados (não toca no Docker)
+npm test             # testes do classificador, métricas, eventos e parser
 ```
 
-Abra `http://localhost:8420`. Parâmetros de URL úteis:
+Em desenvolvimento o servidor usa o socket local (`/var/run/docker.sock`), então seu usuário precisa estar
+no grupo `docker`. Abra `http://localhost:8420`. Parâmetros de URL úteis:
 
 - `?cam=iso|top|side|below|free`: câmera inicial
 - `&focus=<nome-do-container>`: já começa seguindo um personagem
+- `?demo=1`: força os dados simulados
+- `?token=…`: token de acesso (fica salvo no navegador e some da barra de endereço)
+
+Variáveis de ambiente do servidor: `PORT` (8420), `HOST` (0.0.0.0), `DOCKER_HOST` (`unix://…` ou
+`tcp://…`), `DOCKER_OFFICE_TOKEN`, `DOCKER_OFFICE_DEMO=1`, `METRICS_INTERVAL_MS` (3000) e `MAX_CLIENTS` (50).
 
 Por padrão o servidor escuta em `0.0.0.0` (acesso pela rede local). Para restringir à própria máquina:
 
@@ -83,14 +110,25 @@ HOST=127.0.0.1 npm run serve
 ```sh
 git clone https://github.com/DeathHapyness/Docker-Office.git
 cd Docker-Office
-docker compose -f deploy/compose.yml up -d --build
+cp deploy/.env.example deploy/.env
+echo "DOCKER_OFFICE_TOKEN=$(openssl rand -hex 24)" >> deploy/.env   # recomendado
+docker compose --env-file deploy/.env -f deploy/compose.yml up -d --build
 ```
 
-Abra `http://<ip-do-servidor>:8420`. O container roda como usuário sem privilégios, com sistema de
-arquivos somente leitura, sem capabilities e com limite de 128 MB de RAM e meio núcleo. Para atualizar,
-use `git pull && docker compose -f deploy/compose.yml up -d --build`.
+Abra `http://<ip-do-servidor>:8420/?token=<seu-token>` uma vez. O navegador guarda o token.
 
-Sem Docker, com Node ≥ 22: `npm ci && npm run build:web && npm run serve`.
+O compose sobe dois containers:
+
+- **`socket-proxy`** ([Tecnativa](https://github.com/Tecnativa/docker-socket-proxy)): o único que monta o
+  socket do Docker. Libera só leitura de containers e eventos (`POST=0`). Fica numa rede interna, sem porta
+  publicada.
+- **`docker-office`**: fala com o proxy por `tcp://socket-proxy:2375`. Nunca vê o socket. Roda como usuário
+  sem privilégios, com sistema de arquivos somente leitura, sem capabilities e com limite de 192 MB de RAM e
+  meio núcleo.
+
+Para atualizar, use `git pull` e rode o mesmo `docker compose … up -d --build`.
+
+Sem Docker, com Node ≥ 22.18: `npm ci && npm run build:web && npm run serve`.
 
 ## Extensão para o navegador (nova aba)
 
@@ -103,7 +141,7 @@ fora do ar, ela mostra um aviso com o botão **Tentar de novo**.
 1. Suba o servidor.
 2. Em `chrome://extensions`, ligue o **Modo do desenvolvedor**.
 3. Clique em **Carregar sem compactação** e escolha `extras/newtab-extension`.
-4. Nas opções da extensão, informe `http://<ip-do-servidor>:8420/?wallpaper=1`.
+4. Nas opções da extensão, informe `http://<ip-do-servidor>:8420/?wallpaper=1&token=<seu-token>`.
 
 Na primeira nova aba o navegador pergunta se você quer manter a mudança: escolha **Manter**.
 
@@ -128,7 +166,9 @@ Medido em 2026-11-03 com os 32 personagens, Chrome 1400×900 e Radeon RX 6600 XT
 | Memória JS | ~13 MB | ~10 MB |
 | Draw calls por quadro | ~340 | ~340 (+ sombra a cada 3 quadros) |
 
-- **Servidor:** ~17 MB de RAM e ~0% de CPU no container, porque ele só entrega arquivos.
+- **Servidor:** com 32 containers reais, ~0,3% de 1 núcleo e ~100 MB de RAM. O Docker gasta ~2% de 1
+  núcleo respondendo às métricas, coletadas a cada 3 s, só dos containers rodando, 4 por vez.
+- **Rede:** um lote de métricas a cada 3 s (alguns KB). Mudanças de estado chegam em ~0,1–0,3 s.
 - **Download:** ~420 KB no primeiro acesso (gzip). Nos acessos seguintes vem quase só `304 Not Modified`.
 - **Sem GPU** (renderização por software), o 3D cai para ~6 FPS. Em máquinas fracas, use `?fps=15`.
 - **Aba em segundo plano:** o navegador pausa a animação e o custo cai para zero.
@@ -136,27 +176,35 @@ Medido em 2026-11-03 com os 32 personagens, Chrome 1400×900 e Radeon RX 6600 XT
 ## Arquitetura
 
 ```
-Docker Engine ──(socket-proxy, somente leitura)──► Backend Node/TS ──WebSocket──► Frontend estático
-                                                   (próxima etapa)                Three.js + TS (sem bundler)
+Docker Engine ──(socket-proxy, somente leitura)──► Backend Node/TS ──SSE──► Frontend estático
+                                                   /api/events               Three.js + TS (sem bundler)
 ```
+
+- `server/src/docker/`: cliente HTTP da API Docker (`node:http`), parser NDJSON e o `Engine`
+  (eventos, reconexão com backoff e coleta de métricas)
+- `server/src/domain/`: estado em memória, classificador e cálculo de CPU/RAM (lógica pura, testada)
+- `server/src/http/`: arquivos estáticos (gzip + ETag) e Server-Sent Events
 
 - `web/src/scene/`: cena, câmeras e loop
 - `web/src/characters/`: rig voxel articulado montado a partir de dados
 - `web/src/office/`: layout automático, móveis e objetos
 - `web/src/sim/`: agentes (decisão e animação) e navegação A*
 - `web/src/screens/`: telas em canvas (monitores, TV, painel e relógio)
-- `scripts/serve.mjs`: servidor estático com `node:http` (sem Express)
+- `web/src/net/live.ts`: conexão ao vivo (o `EventSource` do navegador já reconecta sozinho)
 
-Dependências de runtime: **`three`** (versão exata). Nada de framework de UI.
+Dependências de runtime: **`three`** (versão exata) e mais nada. O backend roda TypeScript direto no
+Node 22.18+ (*type stripping*), sem `dockerode`, sem `ws` e sem passo de build. Os testes usam `node:test`.
 
 ## Segurança
 
-- **Acesso ao socket do Docker equivale a root no host.** O socket nunca é exposto ao navegador. O
-  backend planejado fala com o Docker através de um
-  [docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy) com permissões **somente de
-  leitura** (`CONTAINERS=1 EVENTS=1 INFO=1 PING=1 VERSION=1 POST=0`), numa rede interna sem porta publicada.
-- A interface é **somente leitura**: não há start, stop nem exec.
-- Não exponha o Docker Office à internet. Ele foi pensado para a LAN e terá token no handshake do WebSocket.
+- **Acesso ao socket do Docker equivale a root no host.** O socket nunca é exposto ao navegador. No
+  deploy, só o [docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy) monta o socket, com
+  permissões **somente de leitura** (`CONTAINERS=1 EVENTS=1 PING=1 VERSION=1 POST=0`), numa rede interna
+  sem porta publicada. Testado: `POST /containers/…/stop` e `GET /images` voltam `403`.
+- A interface é **somente leitura**: não há start, stop nem exec. O servidor só chama `GET` na API Docker.
+- **Token:** com `DOCKER_OFFICE_TOKEN` (mínimo 16 caracteres), `/api/*` exige o token (comparação em
+  tempo constante). Sem ele, qualquer um na LAN vê nomes, imagens e portas dos seus containers.
+- Não exponha o Docker Office à internet. Ele foi pensado para a LAN.
 - O servidor estático só aceita `GET`/`HEAD`, bloqueia path traversal e envia os cabeçalhos `nosniff` e
   `no-referrer`. O `frame-ancestors` só deixa a própria página e extensões de navegador embutirem o app.
 - Os dados vindos do Docker (nomes, labels, imagens) são inseridos no DOM só como texto (`textContent`).
