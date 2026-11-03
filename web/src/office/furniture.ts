@@ -4,7 +4,7 @@ import { U, VoxelBuilder, voxels } from '../three/voxel.js';
 import { shade } from '../pixel/color.js';
 import type { CharacterProfile, DeskStyle } from '../characters/types.js';
 import { decorMesh, propMesh } from './props3d.js';
-import { CUBE } from './layout.js';
+import { CUBE, POSTER_SIZE } from './layout.js';
 import { MonitorScreen } from '../screens/monitor.js';
 
 const DESK_COLORS: Record<DeskStyle, { top: string; body: string }> = {
@@ -230,7 +230,7 @@ export function printer(): THREE.Mesh {
  */
 export function wallPoster(tex: THREE.Texture, seed: number): THREE.Group {
   const g = new THREE.Group();
-  const w = 0.56, h = 0.75;
+  const { w, h } = POSTER_SIZE;
   const sheet = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ map: tex }));
   sheet.position.z = 0.012;
   sheet.receiveShadow = true;
@@ -241,17 +241,17 @@ export function wallPoster(tex: THREE.Texture, seed: number): THREE.Group {
     // fita adesiva meio transparente nos dois cantos de cima
     const tape = new THREE.MeshLambertMaterial({ color: '#f1e7c4', transparent: true, opacity: 0.8 });
     for (const sx of [-1, 1]) {
-      const t = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.045, 0.004), tape);
-      t.position.set(sx * (w / 2 - 0.03), h / 2 - 0.03, 0.016);
+      const t = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.06, 0.004), tape);
+      t.position.set(sx * (w / 2 - 0.04), h / 2 - 0.04, 0.016);
       t.rotation.z = sx * -0.7;
       g.add(t);
     }
   } else {
     // tachinha colorida no topo
-    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.02, 10),
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.02, 10),
       new THREE.MeshLambertMaterial({ color: ['#dc2626', '#2563eb', '#16a34a', '#f59e0b'][seed % 4]! }));
     pin.rotation.x = Math.PI / 2;
-    pin.position.set(0, h / 2 - 0.04, 0.024);
+    pin.position.set(0, h / 2 - 0.05, 0.024);
     g.add(pin);
   }
   return g;

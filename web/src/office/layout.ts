@@ -53,6 +53,9 @@ export interface OfficeLayout {
   nav: NavGrid;
 }
 
+/** Tamanho do pôster de parede em metros. */
+export const POSTER_SIZE = { w: 0.84, h: 1.12 } as const;
+
 export const CUBE = { dx: 2.6, dz: 3.2, back: -1.35, side: -1.09 } as const;
 const LOUNGE = 5.4;
 
@@ -112,27 +115,26 @@ export function computeLayout(ids: readonly string[]): OfficeLayout {
   add('door', width, doorZ, -Math.PI / 2);
   spot('door', width - 0.9, doorZ, Math.PI / 2); spot('door', width - 0.9, doorZ - 1.6, Math.PI / 2);
 
-  // Pôsteres de papel nos vãos livres das paredes (altura dos olhos, acima dos móveis baixos)
+  // Poucos pôsteres grandes, só nos vãos que comportam um inteiro (largura POSTER_SIZE.w + folga)
   let poster = 0;
   const addPoster = (wall: 'back' | 'left' | 'right' | 'front', x: number, z: number): void => {
     const rotY = { back: 0, left: Math.PI / 2, right: -Math.PI / 2, front: Math.PI }[wall];
     fixtures.push({ kind: 'poster', x, z, rotY, variant: poster++, wall });
   };
-  // fundo: evita estante, quadro, TV, painel e bancada do café (meia-largura + folga)
-  const busy: Array<[number, number]> = [
-    [1.2, 0.7], [3.4, 1.0], [tvX, 1.4], [dashX, 1.15], [coffeeX, 1.35],
-  ];
-  for (let x = 0.7; x < width - 0.7; x += 0.1) {
-    if (busy.some(([c, h]) => Math.abs(x - c) < h + 0.3)) continue;
-    addPoster('back', x, 0.01);
-    busy.push([x, 1.0]); // próximo pôster a pelo menos ~1,3 m
+  // fundo: um pôster no meio de cada vão livre entre estante, quadro, TV, painel e café
+  const busy: Array<[number, number]> = [[1.2, 0.7], [3.4, 1.0], [tvX, 1.35], [dashX, 1.1], [coffeeX, 1.3]]
+    .map(([c, h]) => [c! - h!, c! + h!] as [number, number]).sort((p, q) => p[0] - q[0]);
+  let from = 0.3;
+  for (const [l, r] of [...busy, [width - 0.3, width] as [number, number]]) {
+    if (l - from >= POSTER_SIZE.w + 0.5) addPoster('back', (from + l) / 2, 0.01);
+    from = Math.max(from, r);
   }
-  // esquerda: entre as janelas
-  for (let z = 2.4 + 1.7; z < depth - 1.2; z += 3.4) addPoster('left', 0.01, z);
-  // direita: ao longo da parede, longe da porta
-  for (let z = 1.8; z < doorZ - 1.4; z += 4.0) addPoster('right', width - 0.01, z);
-  // frente: espaçados
-  for (let x = 3; x < width - 2; x += 6) addPoster('front', x, depth - 0.01);
+  // esquerda: dois vãos entre janelas (um perto da copa, outro no meio das baias)
+  const gaps: number[] = [];
+  for (let z = 2.4 + 1.7; z < depth - 1.2; z += 3.4) gaps.push(z);
+  for (const z of [gaps[1], gaps[gaps.length - 2]]) if (z !== undefined) addPoster('left', 0.01, z);
+  // direita: um, entre o bebedouro e a porta
+  addPoster('right', width - 0.01, (3.8 + doorZ) / 2);
 
   // Navegação
   const nav = new NavGrid(width, depth);

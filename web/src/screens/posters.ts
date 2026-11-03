@@ -300,9 +300,10 @@ export const POSTERS: readonly Draw[] = [
 
 export function posterTexture(index: number): THREE.CanvasTexture {
   const cv = document.createElement('canvas');
-  cv.width = POSTER_W;
-  cv.height = POSTER_H;
+  cv.width = POSTER_W * 2; // 2× para ficar nítido no tamanho grande
+  cv.height = POSTER_H * 2;
   const c = cv.getContext('2d')!;
+  c.scale(2, 2);
   const i = ((index % POSTERS.length) + POSTERS.length) % POSTERS.length;
   const rnd = seeded(1000 + i * 77);
   POSTERS[i]!(c, rnd);

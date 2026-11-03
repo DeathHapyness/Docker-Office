@@ -336,7 +336,7 @@ export class OfficeScene {
           let tex = posters.get(v % 12);
           if (!tex) posters.set(v % 12, (tex = posterTexture(v)));
           obj = wallPoster(tex, v);
-          obj.position.y = 1.75;
+          obj.position.y = 1.85;
           parent = { back, left, right, front }[f.wall ?? 'back'];
           break;
         }
