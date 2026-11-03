@@ -1,0 +1,14 @@
+node_modules
+web/build
+.git
+dev
+server
+extras
+deploy/*.md
+*.log
+.env
+*.env
+AGENTS.md
+CLAUDE.md
+.claude
+.serena
