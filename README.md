@@ -34,6 +34,11 @@ serviço.
   - **painel de métricas:** gráfico de CPU dos 6 serviços mais ativos e ranking de memória.
 - **Câmera livre 360°**, inclusive por baixo do piso, com presets. Clique num personagem para segui-lo: na
   mesa, a câmera vai por cima do ombro para mostrar a tela.
+- **Botão Log:** registra tudo o que mudou, como eventos Docker, trocas de estado, health, reinícios e
+  quedas do Engine. Tem filtros (Docker, Estados, Problemas) e exportação para `.txt`. Clique numa linha
+  para seguir o personagem.
+- **Papel de parede do navegador:** `?wallpaper=1` tira a interface e gira a câmera devagar a 20 FPS. A
+  extensão em [`extras/newtab-extension`](extras/newtab-extension) coloca isso em toda nova aba.
 - **Detalhes no hover:** estado Docker, uptime, CPU, RAM, reinícios, código de saída, imagem, portas e
   último evento.
 
@@ -68,6 +73,46 @@ Por padrão o servidor escuta em `0.0.0.0` (acesso pela rede local). Para restri
 HOST=127.0.0.1 npm run serve
 ```
 
+## Rodar no servidor (Docker)
+
+```sh
+git clone https://github.com/DeathHapyness/Docker-Office.git
+cd Docker-Office
+docker compose -f deploy/compose.yml up -d --build
+```
+
+Abra `http://<ip-do-servidor>:8420`. O container roda como usuário sem privilégios, com sistema de
+arquivos somente leitura, sem capabilities e com limite de 128 MB de RAM e meio núcleo. Para atualizar,
+use `git pull && docker compose -f deploy/compose.yml up -d --build`.
+
+Sem Docker, com Node ≥ 22: `npm ci && npm run build:web && npm run serve`.
+
+## Plano de fundo do navegador
+
+1. Suba o servidor.
+2. Em `chrome://extensions`, ligue o **Modo do desenvolvedor**.
+3. Clique em **Carregar sem compactação** e escolha `extras/newtab-extension`.
+4. Nas opções da extensão, informe `http://<ip-do-servidor>:8420/?wallpaper=1`.
+
+Funciona em Chrome, Edge, Brave e Vivaldi. Parâmetros úteis: `&fps=15`, `&orbit=0` (câmera parada) e
+`&cam=top`.
+
+## Desempenho
+
+Medido em 2026-11-03 com os 32 personagens, Chrome 1400×900 e Radeon RX 6600 XT:
+
+| | Tela normal | Papel de parede (`?wallpaper=1`) |
+|---|---|---|
+| FPS | 60 | 20 (limitado de propósito) |
+| CPU do navegador (JS) | ~18% de 1 núcleo | ~7% de 1 núcleo |
+| Memória JS | ~13 MB | ~10 MB |
+| Draw calls por quadro | ~340 | ~340 (+ sombra a cada 3 quadros) |
+
+- **Servidor:** ~17 MB de RAM e ~0% de CPU no container, porque ele só entrega arquivos.
+- **Download:** ~420 KB no primeiro acesso (gzip). Nos acessos seguintes vem quase só `304 Not Modified`.
+- **Sem GPU** (renderização por software), o 3D cai para ~6 FPS. Em máquinas fracas, use `?fps=15`.
+- **Aba em segundo plano:** o navegador pausa a animação e o custo cai para zero.
+
 ## Arquitetura
 
 ```
@@ -92,8 +137,8 @@ Dependências de runtime: **`three`** (versão exata). Nada de framework de UI.
   leitura** (`CONTAINERS=1 EVENTS=1 INFO=1 PING=1 VERSION=1 POST=0`), numa rede interna sem porta publicada.
 - A interface é **somente leitura**: não há start, stop nem exec.
 - Não exponha o Docker Office à internet. Ele foi pensado para a LAN e terá token no handshake do WebSocket.
-- O servidor estático só aceita `GET`/`HEAD`, bloqueia path traversal e envia cabeçalhos `nosniff`,
-  `no-referrer` e `frame-ancestors 'none'`.
+- O servidor estático só aceita `GET`/`HEAD`, bloqueia path traversal e envia os cabeçalhos `nosniff` e
+  `no-referrer`. O `frame-ancestors` só deixa a própria página e extensões de navegador embutirem o app.
 - Os dados vindos do Docker (nomes, labels, imagens) são inseridos no DOM só como texto (`textContent`).
 
 ## Licença
