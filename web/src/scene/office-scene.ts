@@ -5,6 +5,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DObject, CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { ContainerView } from '../model.js';
 import type { CharacterProfile } from '../characters/types.js';
 import { buildRig } from '../characters/rig.js';
@@ -16,8 +17,9 @@ import {
 } from '../office/furniture.js';
 import { Agent, type World } from '../sim/agent.js';
 import { hash } from '../pixel/color.js';
-import { U } from '../three/voxel.js';
+import { U, voxelMaterial } from '../three/voxel.js';
 import { posterTexture } from '../screens/posters.js';
+import { EventLog } from '../state/event-log.js';
 import { MetricsBoard, NewsTv, WallClock, skylineTexture, type OfficeEvent, type OfficeSnapshot } from '../screens/wall.js';
 
 export type CameraPreset = 'free' | 'top' | 'iso' | 'side' | 'below' | 'follow';
@@ -32,11 +34,6 @@ interface Entry {
 
 const HISTORY = 60; // amostras de CPU (a cada 2 s → 2 min)
 const STATE_COLOR = { working: '#22c55e', busy: '#f59e0b', stopped: '#111318', error: '#ef4444' } as const;
-const EVENT_TEXT: Record<string, string> = {
-  start: 'começou a trabalhar', stop: 'foi para casa', die: 'caiu', restart: 'reiniciou', kill: 'foi interrompido',
-  create: 'foi contratado', destroy: 'saiu da empresa', pause: 'pausou', unpause: 'voltou da pausa', oom: 'ficou sem memória',
-};
-
 export class OfficeScene {
   readonly renderer: THREE.WebGLRenderer;
   private readonly labels: CSS2DRenderer;
@@ -61,8 +58,13 @@ export class OfficeScene {
   private readonly board = new MetricsBoard();
   private readonly clockFace = new WallClock();
   private readonly sky = skylineTexture();
+  /** Log de tudo que mudou nos containers e no Engine (painel "Log" e ticker da TV). */
+  readonly log = new EventLog();
   private readonly events: OfficeEvent[] = [];
-  private readonly lastEvent = new Map<string, string>();
+  /** Modo papel de parede: limite de FPS (0 = sem limite) e órbita lenta automática. */
+  private fpsCap = 0;
+  private lastRender = -1;
+  private frameNo = 0;
   private sampleT = 2; // primeira amostra já no primeiro quadro
 
   /** Chamado quando o mouse passa sobre um personagem (null ao sair). */
@@ -72,6 +74,7 @@ export class OfficeScene {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.autoUpdate = false; // atualizada 1 a cada 3 quadros no loop
     this.renderer.domElement.className = 'gl';
     host.append(this.renderer.domElement);
 
@@ -98,6 +101,11 @@ export class OfficeScene {
     this.scene.add(this.hemi, this.sun, this.sun.target, this.office);
 
     this.timer.connect(document);
+    this.log.subscribe((e) => {
+      if (e.kind === 'system') return;
+      this.events.push({ at: e.at, text: e.who ? `${e.who} ${e.text}` : e.text });
+      if (this.events.length > 30) this.events.shift();
+    });
     this.setPixelMode(false);
     new ResizeObserver(() => this.resize()).observe(host);
     this.resize();
@@ -117,25 +125,17 @@ export class OfficeScene {
       this.membership = key;
       this.rebuild(usable);
     }
-    for (const { c, p } of usable) {
+    for (const { c } of usable) {
       const e = this.entries.get(c.id);
       if (!e) continue;
       e.agent.setData(c);
       e.label.dataset.state = c.visualState;
-      const le = c.lastEvent;
-      const sig = le ? `${le.action}@${le.at}` : '';
-      if (le && this.lastEvent.get(c.id) !== sig) {
-        if (this.lastEvent.has(c.id)) {
-          const verb = EVENT_TEXT[le.action.split(':')[0]!] ?? le.action;
-          this.events.push({ at: Date.parse(le.at), text: `${p.displayName} ${verb}` });
-          if (this.events.length > 30) this.events.shift();
-        }
-        this.lastEvent.set(c.id, sig);
-      }
     }
+    this.log.observe(usable.map(({ c, p }) => ({ c, who: { name: p.displayName, accent: p.accent } })));
   }
 
   setEngine(status: 'connected' | 'reconnecting' | 'down'): void {
+    if (status !== this.engine) this.log.engine(status);
     this.engine = status;
     this.host.dataset.engine = status;
   }
@@ -146,6 +146,13 @@ export class OfficeScene {
     this.renderer.setPixelRatio(on ? Math.max(0.5, dpr / 2.5) : dpr);
     this.renderer.domElement.style.imageRendering = on ? 'pixelated' : 'auto';
     this.resize();
+  }
+
+  /** Papel de parede: sem interface, FPS limitado e câmera girando devagar. */
+  setWallpaper(fps: number, orbit: boolean): void {
+    this.fpsCap = fps;
+    this.controls.autoRotate = orbit;
+    this.controls.autoRotateSpeed = 0.35;
   }
 
   get pixelMode(): boolean {
@@ -253,6 +260,8 @@ export class OfficeScene {
       });
     }
 
+    this.bakeStatic(new Set([...this.entries.values()].map((e) => e.agent.rig.root)));
+
     const span = Math.max(L.width, L.depth);
     this.sun.position.set(L.width * 0.2, span * 1.1, L.depth * 0.95);
     this.sun.target.position.set(L.width / 2, 0, L.depth / 2);
@@ -268,6 +277,42 @@ export class OfficeScene {
         this.controls.target.copy(this.tween.tTo);
         this.tween = null;
       }
+    }
+  }
+
+  /**
+   * Funde todas as malhas voxel estáticas (mesas, divisórias, cadeiras, objetos, copa) numa só
+   * por tipo de sombra: ~400 draw calls viram 2. Personagens e paredes (que somem com a câmera)
+   * ficam de fora.
+   */
+  private bakeStatic(skip: Set<THREE.Object3D>): void {
+    for (const w of this.walls) skip.add(w.obj);
+    this.office.updateMatrixWorld(true);
+    const groups = { cast: [] as THREE.BufferGeometry[], flat: [] as THREE.BufferGeometry[] };
+    const doomed: THREE.Mesh[] = [];
+    const walk = (o: THREE.Object3D): void => {
+      if (skip.has(o)) return;
+      if (o instanceof THREE.Mesh && o.material === voxelMaterial) {
+        groups[o.castShadow ? 'cast' : 'flat'].push(o.geometry.clone().applyMatrix4(o.matrixWorld));
+        doomed.push(o);
+      }
+      for (const c of o.children) walk(c);
+    };
+    walk(this.office);
+    for (const m of doomed) {
+      m.removeFromParent();
+      m.geometry.dispose();
+    }
+    for (const [kind, list] of Object.entries(groups)) {
+      if (!list.length) continue;
+      const merged = mergeGeometries(list, false);
+      for (const g of list) g.dispose();
+      if (!merged) continue;
+      const mesh = new THREE.Mesh(merged, voxelMaterial);
+      mesh.castShadow = kind === 'cast';
+      mesh.receiveShadow = true;
+      mesh.name = `static-${kind}`;
+      this.office.add(mesh);
     }
   }
 
@@ -351,8 +396,12 @@ export class OfficeScene {
   /* ───────── Loop ───────── */
 
   private frame(ts: number): void {
+    if (this.fpsCap > 0) {
+      if (this.lastRender >= 0 && ts - this.lastRender < 1000 / this.fpsCap - 2) return;
+      this.lastRender = ts;
+    }
     this.timer.update(ts);
-    const dt = Math.min(this.timer.getDelta(), 0.05);
+    const dt = Math.min(this.timer.getDelta(), 0.1);
     const t = this.timer.getElapsed();
     if (!this.layout) return;
     const up = this.engine === 'connected';
@@ -377,7 +426,7 @@ export class OfficeScene {
       e.ws.screen.update({
         name: a.profile.displayName, accent: a.profile.accent, theme: a.profile.screen ?? 'terminal',
         data: a.data, atDesk: a.atDesk, history: e.history, engineUp: up, peers,
-      }, t);
+      }, t, this.camera.position.distanceToSquared(a.position) > 81 ? 2 : 0.5); // longe (> 9 m): ilegível, redesenha menos
       e.ws.status.color.set(up ? STATE_COLOR[a.visual] : '#111318');
       if (e.bubble.textContent !== a.bubble) e.bubble.textContent = a.bubble;
     }
@@ -408,7 +457,7 @@ export class OfficeScene {
       this.controls.target.add(delta);
       this.camera.position.add(delta);
     }
-    this.controls.update();
+    this.controls.update(dt);
 
     const cam = this.camera.position;
     for (const w of this.walls) w.obj.visible = !w.hidden(cam);
@@ -421,6 +470,7 @@ export class OfficeScene {
     this.hemi.intensity = 1.35 * dim;
     this.sun.intensity = 1.9 * dim;
 
+    if (++this.frameNo % 3 === 0 || this.frameNo < 3) this.renderer.shadowMap.needsUpdate = true;
     this.renderer.render(this.scene, this.camera);
     this.labels.render(this.scene, this.camera);
   }

@@ -2,6 +2,7 @@ import type { CharacterProfile } from './characters/types.js';
 import type { ContainerView, VisualState } from './model.js';
 import { OfficeScene, type CameraPreset } from './scene/office-scene.js';
 import { Tooltip } from './ui/tooltip.js';
+import { LogPanel } from './ui/log-panel.js';
 import { mockContainers } from './demo/mock.js';
 
 const MB = 1024 * 1024;
@@ -20,8 +21,18 @@ async function main(): Promise<void> {
   const sync = (): void => office.sync(containers);
   sync();
 
+  const logPanel = new LogPanel(office.log, document.getElementById('log-btn') as HTMLButtonElement);
+  logPanel.onPick = (id) => office.focusOn(id);
+
   // Parâmetros de URL: ?cam=top|iso|side|below|free  &focus=<nome do container>
   const params = new URLSearchParams(location.search);
+  // ?wallpaper=1 → papel de parede (sem interface, câmera girando, 20 FPS). &fps=N &orbit=0
+  if (params.has('wallpaper') && params.get('wallpaper') !== '0') {
+    document.body.classList.add('wallpaper');
+    office.setWallpaper(Number(params.get('fps') ?? 20) || 20, params.get('orbit') !== '0');
+  } else if (params.has('fps')) {
+    office.setWallpaper(Number(params.get('fps')) || 0, false);
+  }
   const cam = params.get('cam') as CameraPreset | null;
   if (cam) office.setPreset(cam);
   const focus = params.get('focus');
