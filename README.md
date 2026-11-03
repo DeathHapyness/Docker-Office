@@ -112,7 +112,8 @@ HOST=127.0.0.1 npm run serve
 git clone https://github.com/DeathHapyness/Docker-Office.git
 cd Docker-Office
 cp deploy/.env.example deploy/.env
-echo "DOCKER_OFFICE_TOKEN=$(openssl rand -hex 24)" >> deploy/.env   # recomendado
+sed -i "s/^DOCKER_OFFICE_TOKEN=.*/DOCKER_OFFICE_TOKEN=$(openssl rand -hex 24)/" deploy/.env   # gera o token
+grep TOKEN deploy/.env   # anote o token
 docker compose --env-file deploy/.env -f deploy/compose.yml up -d --build
 ```
 
