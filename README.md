@@ -131,6 +131,16 @@ Para atualizar, use `git pull` e rode o mesmo `docker compose … up -d --build`
 
 Sem Docker, com Node ≥ 22.18: `npm ci && npm run build:web && npm run serve`.
 
+**Problemas comuns**
+
+- `all predefined address pools have been fully subnetted`: o Docker do servidor já usou todas as
+  sub-redes automáticas, porque cada projeto compose cria a sua. Suba com sub-redes fixas:
+  `docker compose --env-file deploy/.env -f deploy/compose.yml -f deploy/compose.subnets.yml up -d --build`.
+  Se `10.254.0.0/28` já for usado na sua rede, troque em `deploy/.env` (veja o arquivo). Outra saída é
+  `docker network prune`, que apaga só redes sem nenhum container.
+- `open …/docker-compose.prod.yml: no such file or directory` ao rodar só `docker compose up`: a variável
+  `COMPOSE_FILE` do seu shell aponta para outro projeto. Passe sempre `-f deploy/compose.yml`.
+
 ## Extensão para o navegador (nova aba)
 
 A extensão em [`extras/newtab-extension`](extras/newtab-extension) troca a página de nova aba pelo

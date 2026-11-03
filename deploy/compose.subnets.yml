@@ -1,0 +1,14 @@
+# Use quando o Docker do servidor responder "all predefined address pools have been fully subnetted".
+# Fixa as sub-redes das duas redes do Docker Office, então o Docker não precisa tirar nada dos pools:
+#   docker compose -f deploy/compose.yml -f deploy/compose.subnets.yml up -d --build
+# Se 10.254.0.0/28 já for usado na sua rede (LAN, VPN, k8s), troque no deploy/.env:
+#   DOCKER_OFFICE_API_SUBNET=10.253.0.0/29   DOCKER_OFFICE_WEB_SUBNET=10.253.0.8/29
+networks:
+  docker-api:
+    ipam:
+      config:
+        - subnet: ${DOCKER_OFFICE_API_SUBNET:-10.254.0.0/29}
+  web:
+    ipam:
+      config:
+        - subnet: ${DOCKER_OFFICE_WEB_SUBNET:-10.254.0.8/29}
