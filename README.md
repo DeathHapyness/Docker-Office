@@ -16,6 +16,11 @@ serviço.
 | Jellyfin | cinéfilo com pipoca, assiste à TV da copa |
 | …e mais 29 | cada serviço da stack tem perfil próprio em `web/config/characters.json` |
 
+> [!TIP]
+> **Tem extensão para o navegador!** A pasta [`extras/newtab-extension`](extras/newtab-extension) coloca o
+> escritório como **plano de fundo de toda nova aba** no Chrome, Edge, Brave e Vivaldi. Veja
+> [Extensão para o navegador](#extensão-para-o-navegador-nova-aba).
+
 ## O que já funciona (protótipo)
 
 - Escritório único em 3D (Three.js): baias individuais com divisórias, copa com sofá e TV, café,
@@ -87,14 +92,29 @@ use `git pull && docker compose -f deploy/compose.yml up -d --build`.
 
 Sem Docker, com Node ≥ 22: `npm ci && npm run build:web && npm run serve`.
 
-## Plano de fundo do navegador
+## Extensão para o navegador (nova aba)
+
+A extensão em [`extras/newtab-extension`](extras/newtab-extension) troca a página de nova aba pelo
+Docker Office em modo papel de parede: sem botões, câmera girando devagar e 20 FPS. Se o servidor estiver
+fora do ar, ela mostra um aviso com o botão **Tentar de novo**.
+
+**Instalação:**
 
 1. Suba o servidor.
 2. Em `chrome://extensions`, ligue o **Modo do desenvolvedor**.
 3. Clique em **Carregar sem compactação** e escolha `extras/newtab-extension`.
 4. Nas opções da extensão, informe `http://<ip-do-servidor>:8420/?wallpaper=1`.
 
-Funciona em Chrome, Edge, Brave e Vivaldi. Parâmetros úteis: `&fps=15`, `&orbit=0` (câmera parada) e
+Na primeira nova aba o navegador pergunta se você quer manter a mudança: escolha **Manter**.
+
+- **Permissões:** só `storage`, para guardar o endereço. A extensão não lê suas abas, seu histórico nem
+  outros sites.
+- **Modo de abertura:** por padrão o app abre dentro da nova aba, e a barra de endereço continua focada.
+  Se a aba ficar em branco, mude nas opções para **Ir direto para o endereço**.
+- **Compatibilidade:** Chrome, Edge, Brave, Vivaldi e outros Chromium. Ainda não está na Chrome Web Store;
+  a instalação é manual.
+
+Parâmetros úteis no endereço: `&fps=15`, `&orbit=0` (câmera parada) e
 `&cam=top`.
 
 ## Desempenho
