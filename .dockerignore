@@ -2,7 +2,7 @@ node_modules
 web/build
 .git
 dev
-server
+server/test
 extras
 deploy/*.md
 *.log
