@@ -223,3 +223,36 @@ export function printer(): THREE.Mesh {
     .box(-5, 6, 4.5, 10, 2, 1.5, '#6b7280').box(-4, 7.6, 4.6, 8, 0.4, 2, '#ffffff')
     .box(3, 12, 4.9, 2, 1, 0.1, '#22c55e').box(-5, 1, 4.6, 10, 3, 0.1, '#cbd5e1'));
 }
+
+/**
+ * Pôster de papel preso na parede: fita adesiva nos cantos ou tachinha, levemente torto.
+ * Origem no centro do pôster, encostado na parede (frente para +Z).
+ */
+export function wallPoster(tex: THREE.Texture, seed: number): THREE.Group {
+  const g = new THREE.Group();
+  const w = 0.56, h = 0.75;
+  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ map: tex }));
+  sheet.position.z = 0.012;
+  sheet.receiveShadow = true;
+  g.add(sheet);
+  const tilt = (((seed * 37) % 9) - 4) * 0.012;
+  g.rotation.z = tilt;
+  if (seed % 2 === 0) {
+    // fita adesiva meio transparente nos dois cantos de cima
+    const tape = new THREE.MeshLambertMaterial({ color: '#f1e7c4', transparent: true, opacity: 0.8 });
+    for (const sx of [-1, 1]) {
+      const t = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.045, 0.004), tape);
+      t.position.set(sx * (w / 2 - 0.03), h / 2 - 0.03, 0.016);
+      t.rotation.z = sx * -0.7;
+      g.add(t);
+    }
+  } else {
+    // tachinha colorida no topo
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.02, 10),
+      new THREE.MeshLambertMaterial({ color: ['#dc2626', '#2563eb', '#16a34a', '#f59e0b'][seed % 4]! }));
+    pin.rotation.x = Math.PI / 2;
+    pin.position.set(0, h / 2 - 0.04, 0.024);
+    g.add(pin);
+  }
+  return g;
+}

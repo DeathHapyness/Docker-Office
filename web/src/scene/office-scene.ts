@@ -12,11 +12,12 @@ import { resolveProfile } from '../characters/resolve.js';
 import { computeLayout, type OfficeLayout, type Spot, type SpotKind } from '../office/layout.js';
 import {
   bigPlant, bookshelf, buildWorkstation, coffeeCounter, dashboardWall, door, printer, sofa, wallClock, wallTv,
-  waterCooler, whiteboard, windowPane, type Workstation,
+  wallPoster, waterCooler, whiteboard, windowPane, type Workstation,
 } from '../office/furniture.js';
 import { Agent, type World } from '../sim/agent.js';
 import { hash } from '../pixel/color.js';
 import { U } from '../three/voxel.js';
+import { posterTexture } from '../screens/posters.js';
 import { MetricsBoard, NewsTv, WallClock, skylineTexture, type OfficeEvent, type OfficeSnapshot } from '../screens/wall.js';
 
 export type CameraPreset = 'free' | 'top' | 'iso' | 'side' | 'below' | 'follow';
@@ -308,10 +309,11 @@ export class OfficeScene {
       return g;
     };
     const back = mkWall(W + 0.4, 0.2, W / 2, -0.1, (c) => c.z < 0);
-    mkWall(W + 0.4, 0.2, W / 2, D + 0.1, (c) => c.z > D);
+    const front = mkWall(W + 0.4, 0.2, W / 2, D + 0.1, (c) => c.z > D);
     const left = mkWall(0.2, D, -0.1, D / 2, (c) => c.x < 0);
     const right = mkWall(0.2, D, W + 0.1, D / 2, (c) => c.x > W);
 
+    const posters = new Map<number, THREE.Texture>();
     for (const f of L.fixtures) {
       let obj: THREE.Object3D;
       let parent: THREE.Object3D = this.office;
@@ -329,6 +331,15 @@ export class OfficeScene {
         case 'clock': obj = wallClock(this.clockFace.texture); parent = back; break;
         case 'window': obj = windowPane(1.9, 1.4, this.sky); obj.position.y = 0.95; parent = left; x = 0.01; break;
         case 'door': obj = door(); parent = right; x = W - 0.01; break;
+        case 'poster': {
+          const v = f.variant ?? 0;
+          let tex = posters.get(v % 12);
+          if (!tex) posters.set(v % 12, (tex = posterTexture(v)));
+          obj = wallPoster(tex, v);
+          obj.position.y = 1.75;
+          parent = { back, left, right, front }[f.wall ?? 'back'];
+          break;
+        }
       }
       obj.position.x = x;
       obj.position.z = f.z;

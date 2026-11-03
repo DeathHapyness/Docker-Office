@@ -29,13 +29,16 @@ export interface DeskSlot {
 
 export type FixtureKind =
   | 'sofa' | 'tv' | 'coffee' | 'cooler' | 'dashboard' | 'shelf' | 'plant' | 'window' | 'door'
-  | 'whiteboard' | 'printer' | 'clock';
+  | 'whiteboard' | 'printer' | 'clock' | 'poster';
 
 export interface Fixture {
   kind: FixtureKind;
   x: number;
   z: number;
   rotY: number;
+  /** Pôster: qual arte (índice em POSTERS) e em qual parede está. */
+  variant?: number;
+  wall?: 'back' | 'left' | 'right' | 'front';
 }
 
 export interface OfficeLayout {
@@ -108,6 +111,28 @@ export function computeLayout(ids: readonly string[]): OfficeLayout {
   const doorZ = depth - 2.2;
   add('door', width, doorZ, -Math.PI / 2);
   spot('door', width - 0.9, doorZ, Math.PI / 2); spot('door', width - 0.9, doorZ - 1.6, Math.PI / 2);
+
+  // Pôsteres de papel nos vãos livres das paredes (altura dos olhos, acima dos móveis baixos)
+  let poster = 0;
+  const addPoster = (wall: 'back' | 'left' | 'right' | 'front', x: number, z: number): void => {
+    const rotY = { back: 0, left: Math.PI / 2, right: -Math.PI / 2, front: Math.PI }[wall];
+    fixtures.push({ kind: 'poster', x, z, rotY, variant: poster++, wall });
+  };
+  // fundo: evita estante, quadro, TV, painel e bancada do café (meia-largura + folga)
+  const busy: Array<[number, number]> = [
+    [1.2, 0.7], [3.4, 1.0], [tvX, 1.4], [dashX, 1.15], [coffeeX, 1.35],
+  ];
+  for (let x = 0.7; x < width - 0.7; x += 0.1) {
+    if (busy.some(([c, h]) => Math.abs(x - c) < h + 0.3)) continue;
+    addPoster('back', x, 0.01);
+    busy.push([x, 1.0]); // próximo pôster a pelo menos ~1,3 m
+  }
+  // esquerda: entre as janelas
+  for (let z = 2.4 + 1.7; z < depth - 1.2; z += 3.4) addPoster('left', 0.01, z);
+  // direita: ao longo da parede, longe da porta
+  for (let z = 1.8; z < doorZ - 1.4; z += 4.0) addPoster('right', width - 0.01, z);
+  // frente: espaçados
+  for (let x = 3; x < width - 2; x += 6) addPoster('front', x, depth - 0.01);
 
   // Navegação
   const nav = new NavGrid(width, depth);
