@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Docker Office na nova aba",
+  "version": "0.1.0",
+  "description": "Mostra o escritório do Docker Office como plano de fundo de toda nova aba.",
+  "chrome_url_overrides": { "newtab": "newtab.html" },
+  "options_ui": { "page": "options.html", "open_in_tab": false },
+  "permissions": ["storage"]
+}

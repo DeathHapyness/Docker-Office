@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Docker Office — opções</title>
+  <link rel="stylesheet" href="options.css">
+  <script type="module" src="options.js"></script>
+</head>
+<body>
+  <form id="form">
+    <label for="url">Endereço do Docker Office</label>
+    <input id="url" type="url" required placeholder="http://192.168.0.10:8420/?wallpaper=1">
+    <p class="hint">Parâmetros: <code>wallpaper=1</code> (sem interface), <code>fps=20</code>, <code>orbit=0</code> (câmera parada),
+      <code>cam=top</code>.</p>
+    <fieldset>
+      <legend>Como abrir</legend>
+      <label><input type="radio" name="mode" value="iframe"> Dentro da nova aba (recomendado: a barra de endereço continua focada)</label>
+      <label><input type="radio" name="mode" value="redirect"> Ir direto para o endereço (use se a opção acima ficar em branco)</label>
+    </fieldset>
+    <button type="submit">Salvar</button> <output id="status" aria-live="polite"></output>
+  </form>
+</body>
+</html>

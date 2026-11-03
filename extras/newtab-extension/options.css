@@ -1,0 +1,7 @@
+body { margin: 0; padding: 16px; min-width: 380px; font: 14px/1.5 system-ui, "Segoe UI", Roboto, Ubuntu, sans-serif; color-scheme: light dark; }
+form { display: grid; gap: 10px; }
+input[type="url"] { padding: 6px 8px; font: inherit; }
+fieldset { display: grid; gap: 6px; }
+.hint { margin: 0; font-size: 12px; opacity: 0.75; }
+button { justify-self: start; padding: 6px 14px; font: inherit; cursor: pointer; }
+output { font-size: 13px; }
