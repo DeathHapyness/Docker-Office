@@ -19,7 +19,8 @@ serviço.
 ## O que já funciona (protótipo)
 
 - Escritório único em 3D (Three.js): baias individuais com divisórias, copa com sofá e TV, café,
-  bebedouro, estante, quadro branco, impressora, janelas com vista da cidade e relógio com a hora real.
+  bebedouro, estante, quadro branco, impressora, janelas com vista da cidade, relógio com a hora real e
+  pôsteres de papel da cultura dev nas paredes.
 - **32 personagens** gerados em código, sem assets externos. Cada um tem roupa, acessório, mesa e decoração.
 - Comportamento por estado:
   - **ocioso:** café, janela, conversa, manias do perfil;
@@ -37,8 +38,15 @@ serviço.
   último evento.
 
 > **Estado atual:** o frontend roda com **dados simulados** (`web/src/demo/mock.ts`). O backend que lê o
-> Docker de verdade (descoberta, eventos, métricas e WebSocket) é a próxima etapa. Veja o roadmap em
-> [`AGENTS.md`](AGENTS.md).
+> Docker de verdade (descoberta, eventos, métricas e WebSocket) é a próxima etapa.
+
+## Roadmap
+
+1. Protocolo WebSocket + servidor mock no mesmo protocolo
+2. Backend Docker: descoberta, eventos (start/stop/die/health) e classificação de estado
+3. Métricas (CPU/RAM via stats em stream) e estado "ocupado" com histerese
+4. Resiliência: reconexão ao Engine, reconciliação e status "reconectando"
+5. Deploy containerizado com docker-socket-proxy e token na LAN
 
 ## Como rodar
 

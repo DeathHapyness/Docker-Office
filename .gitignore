@@ -7,3 +7,17 @@ web/build/
 dev/stack-test/test.env
 .serena/
 .claude/
+AGENTS.md
+# Arquivos de agentes de IA / configuração local da máquina (não versionar)
+CLAUDE.md
+CLAUDE.local.md
+GEMINI.md
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.codex/
+.aider*
+.continue/
+.github/copilot-instructions.md
+docs/superpowers/
