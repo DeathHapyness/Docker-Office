@@ -89,7 +89,8 @@ npm test             # testes do classificador, métricas, eventos e parser
 ```
 
 Em desenvolvimento o servidor usa o socket local (`/var/run/docker.sock`), então seu usuário precisa estar
-no grupo `docker`. Abra `http://localhost:8420`. Parâmetros de URL úteis:
+no grupo `docker`. Abra `http://localhost:8421` (`dev` e `demo` usam a 8421 para não brigar com um deploy
+na 8420; `PORT=…` muda). Parâmetros de URL úteis:
 
 - `?cam=iso|top|side|below|free`: câmera inicial
 - `&focus=<nome-do-container>`: já começa seguindo um personagem

@@ -15,8 +15,8 @@
     "typecheck": "tsc -p web/tsconfig.json --noEmit && tsc -p server/tsconfig.json",
     "test": "node --test \"server/test/*.test.ts\"",
     "serve": "node server/src/index.ts",
-    "demo": "DOCKER_OFFICE_DEMO=1 node server/src/index.ts",
-    "dev": "npm run build:web && npm run serve"
+    "demo": "DOCKER_OFFICE_DEMO=1 PORT=${PORT:-8421} node server/src/index.ts",
+    "dev": "npm run build:web && PORT=${PORT:-8421} npm run serve"
   },
   "engines": {
     "node": ">=22.18"
