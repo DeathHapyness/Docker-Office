@@ -15,7 +15,7 @@ import { SECURITY_HEADERS, createStatic } from './http/static.ts';
 const cfg = loadConfig();
 const ROOT = resolve(import.meta.dirname, '..', '..');
 const serveStatic = createStatic(resolve(ROOT, 'web'), new Map([['three', resolve(ROOT, 'node_modules', 'three')]]));
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 
 const store = new Store();
 const hub = new SseHub(cfg.maxClients);

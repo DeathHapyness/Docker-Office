@@ -81,6 +81,7 @@ export class Engine {
       let reason: string;
       try {
         const since = this.since || Math.floor(Date.now() / 1000) - 1;
+        this.api.renegotiate();
         await this.reconcile();
         this.setStatus('connected');
         this.out.snapshot();
