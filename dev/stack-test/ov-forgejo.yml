@@ -1,0 +1,6 @@
+services:
+  server:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:3044:3000"
+      - "127.0.0.1:222:22"

@@ -1,0 +1,17 @@
+services:
+  prometheus:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:9090:9090"
+  node-exporter:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:9100:9100"
+  cadvisor:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:8085:8080"
+  grafana:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:3000:3000"

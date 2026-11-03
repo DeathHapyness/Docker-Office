@@ -1,0 +1,5 @@
+services:
+  jellyseerr:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:5055:5055"

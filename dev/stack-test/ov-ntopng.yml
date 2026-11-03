@@ -1,0 +1,7 @@
+services:
+  redis:
+    restart: "no"
+  ntopng:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:3100:3000"

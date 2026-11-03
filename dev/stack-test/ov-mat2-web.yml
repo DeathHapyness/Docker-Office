@@ -1,0 +1,8 @@
+services:
+  mat2-web:
+    restart: "no"
+    build: !reset null
+    image: registry.0xacab.org/jvoisin/mat2-web:latest
+    ports: !override
+      - "127.0.0.1:8282:8080"
+    volumes: !reset []

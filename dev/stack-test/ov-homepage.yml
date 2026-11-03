@@ -1,0 +1,10 @@
+services:
+  homepage:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:3001:3000"
+    environment: !override
+      - HOMEPAGE_ALLOWED_HOSTS=localhost:3001,127.0.0.1:3001
+    volumes: !override
+      - ${DATA_DIR}/homepage/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro

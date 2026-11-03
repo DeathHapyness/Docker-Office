@@ -1,0 +1,17 @@
+services:
+  immich-server:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:2283:2283"
+    env_file: !reset []
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+  immich-machine-learning:
+    restart: "no"
+    env_file: !reset []
+  redis:
+    restart: "no"
+  database:
+    restart: "no"

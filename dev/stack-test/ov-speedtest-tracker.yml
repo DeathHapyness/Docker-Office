@@ -1,0 +1,9 @@
+services:
+  speedtest-tracker:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:8765:80"
+    env_file: !reset []
+    environment:
+      - APP_KEY=${SPEEDTEST_APP_KEY}
+      - SPEEDTEST_SCHEDULE=

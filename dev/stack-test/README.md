@@ -1,13 +1,29 @@
 # Stack de teste (somente local)
 
-Sobe os serviços reais de `~/Projects/self-hosted-media-server` **sem editar os composes**:
-
-- `test.env` (copie de `test.env.example`; fica fora do git) aponta `DATA_DIR`/`MEDIA_DIR` para `self-hosted-media-server/data/` (já ignorado pelo git de lá).
-- `ov-<serviço>.yml` desliga o restart automático; AdGuard usa a porta 1053 (53 está ocupada pelo systemd-resolved).
+Sobe os **32 serviços reais** de `~/Projects/self-hosted-media-server` para ver o Docker Office ao vivo,
+**sem editar nada lá**: cada pasta recebe o override `ov-<pasta>.yml` daqui.
 
 ```sh
-R=~/Projects/self-hosted-media-server; T=$PWD/dev/stack-test
-(cd $R/jellyfin && docker compose --env-file $T/test.env -f docker-compose.yml -f $T/ov-jellyfin.yml up -d)
-# idem sonarr, radarr, adguard (ov-adguard.yml)
-# derrubar: trocar `up -d` por `down`
+cp dev/stack-test/test.env.example dev/stack-test/test.env   # ajuste caminhos e gere as senhas
+dev/stack-test/stack.sh up      # sobe tudo (cria a rede media_network se faltar)
+dev/stack-test/stack.sh ps      # status
+dev/stack-test/stack.sh down    # derruba tudo
+```
+
+O que os overrides mudam (só para teste):
+
+- `restart: "no"` em tudo — nada volta sozinho depois de um reboot.
+- Portas novas publicadas **só em `127.0.0.1`** (Juice Shop é propositalmente vulnerável; File Browser, n8n,
+  qBittorrent e Forgejo nascem sem senha configurada). AdGuard usa 1053 (53 é do systemd-resolved).
+- `test.env` (fora do git) define `DATA_DIR`/`MEDIA_DIR` em `self-hosted-media-server/data/` (ignorado pelo git
+  de lá) e as variáveis que os `.env` de Immich, Kopia e Speedtest Tracker teriam.
+- Kopia não monta a sua home nem `/mnt/backup`; Scrutiny só recebe `/dev/sda`; MAT2 usa a imagem oficial
+  em vez do build; Homepage guarda a config em `DATA_DIR`; Speedtest Tracker sem testes agendados.
+
+Se um container sair com *permission denied* na primeira subida, a pasta em `data/` foi criada como root pelo
+Docker. Ajuste o dono só daquela pasta, por exemplo Prometheus (`65534`) e Grafana (`472`):
+
+```sh
+docker run --rm -v ~/Projects/self-hosted-media-server/data:/d alpine \
+  chown -R 65534:65534 /d/monitoring/prometheus-data
 ```

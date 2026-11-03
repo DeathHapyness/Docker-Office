@@ -1,0 +1,7 @@
+services:
+  scrutiny:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:8090:8080"
+    devices: !override
+      - /dev/sda:/dev/sda

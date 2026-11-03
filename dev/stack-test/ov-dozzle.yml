@@ -1,0 +1,5 @@
+services:
+  dozzle:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:9999:8080"

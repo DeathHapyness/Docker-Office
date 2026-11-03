@@ -1,0 +1,5 @@
+services:
+  glances:
+    restart: "no"
+    ports: !override
+      - "127.0.0.1:61208:61208"
