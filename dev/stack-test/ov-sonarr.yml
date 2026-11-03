@@ -1,0 +1,6 @@
+services:
+  sonarr:
+    restart: "no"
+    volumes:
+      - ${DATA_DIR}/media/tv:/tv
+      - ${DATA_DIR}/media/downloads:/downloads

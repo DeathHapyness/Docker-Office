@@ -1,0 +1,3 @@
+services:
+  radarr:
+    restart: "no"
