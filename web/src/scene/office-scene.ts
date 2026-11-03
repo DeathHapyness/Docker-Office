@@ -10,6 +10,7 @@ import type { ContainerView } from '../model.js';
 import type { CharacterProfile } from '../characters/types.js';
 import { buildRig } from '../characters/rig.js';
 import { resolveProfile } from '../characters/resolve.js';
+import { genericProfile, prettyName } from '../characters/generic.js';
 import { computeLayout, type OfficeLayout, type Spot, type SpotKind } from '../office/layout.js';
 import {
   bigPlant, bookshelf, buildWorkstation, coffeeCounter, dashboardWall, door, printer, sofa, wallClock, wallTv,
@@ -65,6 +66,10 @@ export class OfficeScene {
   private fpsCap = 0;
   private lastRender = -1;
   private frameNo = 0;
+  private readonly generic = new Map<string, CharacterProfile>();
+  private forced?: 'day' | 'night';
+  private night = false;
+  private nightT = -1;
   private sampleT = 2; // primeira amostra já no primeiro quadro
 
   /** Chamado quando o mouse passa sobre um personagem (null ao sair). */
@@ -117,8 +122,7 @@ export class OfficeScene {
 
   sync(containers: readonly ContainerView[]): void {
     const usable = containers
-      .map((c) => ({ c, p: resolveProfile(c, this.profiles) }))
-      .filter((x): x is { c: ContainerView; p: CharacterProfile } => !!x.p)
+      .map((c) => ({ c, p: this.profileFor(c) }))
       .sort((a, b) => a.p.displayName.localeCompare(b.p.displayName));
     const key = usable.map(({ c }) => c.id).join(',');
     if (key !== this.membership) {
@@ -134,10 +138,35 @@ export class OfficeScene {
     this.log.observe(usable.map(({ c, p }) => ({ c, who: { name: p.displayName, accent: p.accent } })));
   }
 
-  setEngine(status: 'connected' | 'reconnecting' | 'down'): void {
-    if (status !== this.engine) this.log.engine(status);
+  /** Perfil cadastrado ou, se não houver, um gerado a partir do nome (estável entre sincronizações). */
+  private profileFor(c: ContainerView): CharacterProfile {
+    let g = this.generic.get(c.name);
+    if (g) return g;
+    const known = resolveProfile(c, this.profiles);
+    if (!known) g = genericProfile(c);
+    else {
+      // casou só pela imagem (ex.: outro postgres): mesmo visual, mas com o nome do próprio container
+      const names = (known.match.names ?? []).map((n) => n.toLowerCase());
+      const byName = c.character === known.id || [c.name, c.service].some((n) => n && names.includes(n.toLowerCase()));
+      if (byName) return known;
+      g = { ...known, id: `${known.id}:${c.name}`, displayName: prettyName(c.name) };
+    }
+    this.generic.set(c.name, g);
+    return g;
+  }
+
+  /** Nomes visíveis + ids, para a busca. */
+  directory(): Array<{ id: string; name: string; container: string }> {
+    return [...this.entries.values()].map((e) => ({ id: e.agent.data.id, name: e.agent.profile.displayName, container: e.agent.data.name }));
+  }
+
+  setEngine(status: 'connected' | 'reconnecting' | 'down', reason?: string): void {
+    if (status !== this.engine) this.log.engine(status, reason);
     this.engine = status;
     this.host.dataset.engine = status;
+    this.host.dataset.message = status === 'connected' ? '' : status === 'reconnecting'
+      ? `Reconectando ao Docker…${reason ? ` (${reason})` : ''}`
+      : `Sem conexão com o Docker — luzes apagadas${reason ? ` (${reason})` : ''}`;
   }
 
   setPixelMode(on: boolean): void {
@@ -153,6 +182,12 @@ export class OfficeScene {
     this.fpsCap = fps;
     this.controls.autoRotate = orbit;
     this.controls.autoRotateSpeed = 0.35;
+  }
+
+  /** Força dia ou noite (?time=day|night); sem isso segue o relógio local. */
+  forceTime(t: 'day' | 'night'): void {
+    this.forced = t;
+    this.nightT = -1;
   }
 
   get pixelMode(): boolean {
@@ -271,7 +306,8 @@ export class OfficeScene {
     sc.far = span * 4;
     sc.updateProjectionMatrix();
     if (firstBuild) {
-      this.setPreset('iso');
+      // respeita um ?cam= aplicado antes dos dados chegarem (modo ao vivo constrói depois)
+      this.setPreset(this.preset === 'follow' ? 'iso' : this.preset);
       if (this.tween) {
         this.camera.position.copy(this.tween.to);
         this.controls.target.copy(this.tween.tTo);
@@ -466,9 +502,24 @@ export class OfficeScene {
       m.depthWrite = cam.y >= 0;
     }
 
+    // Dia/noite pelo relógio local (checado a cada 30 s): à noite o sol vira luar e as luzes
+    // internas seguram o ambiente; a vista das janelas troca para a cidade acesa.
+    if (this.nightT < 0 || t - this.nightT > 30) {
+      const first = this.nightT < 0;
+      this.nightT = t;
+      const h = new Date().getHours();
+      const night = this.forced ? this.forced === 'night' : h >= 19 || h < 6;
+      if (night !== this.night || first) {
+        this.night = night;
+        this.sky.paint(night);
+        this.sun.color.set(night ? '#8fa6d8' : '#fff3e0');
+        this.hemi.color.set(night ? '#c9d3f0' : '#f4f6ff');
+        (this.scene.background as THREE.Color).set(night ? '#0d1020' : '#1b1e2b');
+      }
+    }
     const dim = up ? 1 : 0.25;
-    this.hemi.intensity = 1.35 * dim;
-    this.sun.intensity = 1.9 * dim;
+    this.hemi.intensity = (this.night ? 1.05 : 1.35) * dim;
+    this.sun.intensity = (this.night ? 0.55 : 1.9) * dim;
 
     if (++this.frameNo % 3 === 0 || this.frameNo < 3) this.renderer.shadowMap.needsUpdate = true;
     this.renderer.render(this.scene, this.camera);

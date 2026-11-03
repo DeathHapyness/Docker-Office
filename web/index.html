@@ -18,14 +18,14 @@
 </head>
 <body>
   <header class="topbar">
-    <h1><span class="logo" aria-hidden="true"></span>Docker Office</h1>
+    <h1><span class="logo" aria-hidden="true"></span>Docker Office <span id="mode" class="mode" data-kind="demo">…</span></h1>
     <ul class="legend" aria-label="Legenda de estados">
       <li data-state="working"><span class="dot"></span>Trabalhando</li>
       <li data-state="busy"><span class="dot"></span>Ocupado</li>
       <li data-state="stopped"><span class="dot"></span>Parado</li>
       <li data-state="error"><span class="dot"></span>Erro</li>
     </ul>
-    <nav id="demo" class="demo" aria-label="Simulação">
+    <nav id="demo" class="demo" aria-label="Simulação" hidden>
       <span>Simular:</span>
       <button data-set="idle">Ocioso</button>
       <button data-set="active">Trabalhando</button>
@@ -38,6 +38,7 @@
   </header>
   <main id="office" class="office" data-engine="connected"></main>
   <nav id="cameras" class="cameras" aria-label="Câmera">
+    <input id="search" class="search" type="search" placeholder="Buscar… ( / )" aria-label="Buscar personagem" autocomplete="off" spellcheck="false">
     <button data-cam="free">Livre</button>
     <button data-cam="iso" aria-pressed="true">Isométrica</button>
     <button data-cam="top">De cima</button>
@@ -45,6 +46,7 @@
     <button data-cam="below">De baixo</button>
     <span class="sep"></span>
     <button id="log-btn" data-toggle="log" aria-pressed="false" title="Log de tudo que aconteceu">Log</button>
+    <button id="notify-btn" data-toggle="notify" aria-pressed="false">Avisos</button>
     <button data-toggle="pixel" aria-pressed="false" title="Renderização em baixa resolução, estilo pixel">Pixel</button>
     <p class="hint">Arraste para girar · roda para zoom · botão direito para mover · clique num personagem para segui-lo</p>
   </nav>

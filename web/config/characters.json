@@ -1,2287 +1,2437 @@
 {
- "$comment": "Perfis visuais por serviço. match.names = container/serviço; match.images = trecho do nome da imagem.",
- "profiles": [
-  {
-   "id": "adguard",
-   "displayName": "AdGuard",
-   "role": "Segurança do DNS",
-   "match": {
-    "names": [
-     "adguardhome",
-     "adguard"
-    ],
-    "images": [
-     "adguard/adguardhome"
-    ]
-   },
-   "skin": "tan",
-   "build": "muscle",
-   "hair": {
-    "style": "spiky",
-    "color": "#2b2622"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#3fae5a"
-   },
-   "face": {
-    "kind": "mask",
-    "color": "#1f6b35"
-   },
-   "body": [
+  "$comment": "Perfis visuais por serviço. match.names = container/serviço; match.images = trecho do nome da imagem.",
+  "profiles": [
     {
-     "kind": "cape",
-     "color": "#c62f3a"
+      "id": "adguard",
+      "displayName": "AdGuard",
+      "role": "Segurança do DNS",
+      "match": {
+        "names": [
+          "adguardhome",
+          "adguard"
+        ],
+        "images": [
+          "adguard/adguardhome"
+        ]
+      },
+      "skin": "tan",
+      "build": "muscle",
+      "hair": {
+        "style": "spiky",
+        "color": "#2b2622"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#3fae5a"
+      },
+      "face": {
+        "kind": "mask",
+        "color": "#1f6b35"
+      },
+      "body": [
+        {
+          "kind": "cape",
+          "color": "#c62f3a"
+        },
+        {
+          "kind": "shield",
+          "color": "#f3f4f6",
+          "color2": "#3fae5a"
+        }
+      ],
+      "prop": {
+        "kind": "dumbbell",
+        "color": "#4b5563"
+      },
+      "accent": "#3fae5a",
+      "bubbles": {
+        "working": [
+          "Ninguém passa!",
+          "Bloqueando anúncios"
+        ],
+        "busy": [
+          "Muitas consultas!",
+          "Segurando a porta..."
+        ],
+        "stopped": [
+          "Fora de serviço"
+        ],
+        "error": [
+          "Escudo caiu!"
+        ],
+        "idle": [
+          "Ninguém entra sem crachá!",
+          "Já bloqueei 10 mil anúncios hoje",
+          "Treino de pernas amanhã"
+        ]
+      },
+      "pants": "#1f2937",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "trophy",
+          "figurine"
+        ]
+      },
+      "behavior": {
+        "signature": [
+          "patrol",
+          "flex"
+        ],
+        "walkSpeed": 1.1
+      },
+      "screen": "dns"
     },
     {
-     "kind": "shield",
-     "color": "#f3f4f6",
-     "color2": "#3fae5a"
-    }
-   ],
-   "prop": {
-    "kind": "dumbbell",
-    "color": "#4b5563"
-   },
-   "accent": "#3fae5a",
-   "bubbles": {
-    "working": [
-     "Ninguém passa!",
-     "Bloqueando anúncios"
-    ],
-    "busy": [
-     "Muitas consultas!",
-     "Segurando a porta..."
-    ],
-    "stopped": [
-     "Fora de serviço"
-    ],
-    "error": [
-     "Escudo caiu!"
-    ],
-    "idle": [
-     "Ninguém entra sem crachá!",
-     "Já bloqueei 10 mil anúncios hoje",
-     "Treino de pernas amanhã"
-    ]
-   },
-   "pants": "#1f2937",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "trophy",
-     "figurine"
-    ]
-   },
-   "behavior": {
-    "signature": [
-     "patrol",
-     "flex"
-    ],
-    "walkSpeed": 1.1
-   },
-   "screen": "dns"
-  },
-  {
-   "id": "grafana",
-   "displayName": "Grafana",
-   "role": "Nerd dos gráficos",
-   "match": {
-    "names": [
-     "grafana"
-    ],
-    "images": [
-     "grafana/grafana"
-    ]
-   },
-   "skin": "light",
-   "build": "slim",
-   "hair": {
-    "style": "messy",
-    "color": "#6b4423"
-   },
-   "top": {
-    "style": "hoodie",
-    "color": "#f46800"
-   },
-   "face": {
-    "kind": "bigglasses",
-    "color": "#1f2937"
-   },
-   "head": {
-    "kind": "headset",
-    "color": "#f46800"
-   },
-   "prop": {
-    "kind": "chart",
-    "color": "#22c55e",
-    "color2": "#60a5fa"
-   },
-   "accent": "#f46800",
-   "bubbles": {
-    "working": [
-     "Olha esse gráfico!",
-     "Tudo verde por aqui"
-    ],
-    "busy": [
-     "Renderizando painéis..."
-    ],
-    "stopped": [
-     "Painéis desligados"
-    ],
-    "error": [
-     "Sem dados!"
-    ],
-    "idle": [
-     "Esse pico ali é estranho...",
-     "Mais um painel não faz mal",
-     "Alguém viu meu headset?"
-    ]
-   },
-   "pants": "#334155",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "sticky",
-     "snacks",
-     "figurine"
-    ]
-   },
-   "behavior": {
-    "signature": [
-     "point-dashboard"
-    ]
-   },
-   "screen": "dashboard"
-  },
-  {
-   "id": "jellyfin",
-   "displayName": "Jellyfin",
-   "role": "Cinéfilo da casa",
-   "match": {
-    "names": [
-     "jellyfin"
-    ],
-    "images": [
-     "jellyfin/jellyfin"
-    ]
-   },
-   "skin": "fair",
-   "build": "normal",
-   "hair": {
-    "style": "side",
-    "color": "#3a2a4a"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#2c2f5b"
-   },
-   "head": {
-    "kind": "beret",
-    "color": "#aa5cc3"
-   },
-   "facial": [
-    {
-     "kind": "mustache",
-     "color": "#3a2a4a"
-    }
-   ],
-   "body": [
-    {
-     "kind": "scarf",
-     "color": "#00a4dc",
-     "color2": "#aa5cc3"
-    }
-   ],
-   "prop": {
-    "kind": "popcorn",
-    "color": "#e04848"
-   },
-   "accent": "#aa5cc3",
-   "bubbles": {
-    "working": [
-     "Sessão das 8!",
-     "Pipoca pronta"
-    ],
-    "busy": [
-     "Transcodificando..."
-    ],
-    "stopped": [
-     "Cinema fechado"
-    ],
-    "error": [
-     "O filme travou!"
-    ],
-    "idle": [
-     "Hoje tem sessão dupla",
-     "Esse filme é um clássico",
-     "Cadê a pipoca?"
-    ]
-   },
-   "pants": "#1e1b4b",
-   "desk": {
-    "style": "dark",
-    "decor": [
-     "frame",
-     "lamp"
-    ]
-   },
-   "behavior": {
-    "signature": [
-     "watch-tv"
-    ]
-   },
-   "screen": "media-grid"
-  },
-  {
-   "id": "sonarr",
-   "displayName": "Sonarr",
-   "role": "Maratonista de séries",
-   "match": {
-    "names": [
-     "sonarr"
-    ],
-    "images": [
-     "linuxserver/sonarr",
-     "sonarr"
-    ]
-   },
-   "skin": "brown",
-   "build": "normal",
-   "hair": {
-    "style": "curly",
-    "color": "#1c1714"
-   },
-   "top": {
-    "style": "hoodie",
-    "color": "#35c5f4"
-   },
-   "facial": [
-    {
-     "kind": "eyebags",
-     "color": "#6f89b8"
-    }
-   ],
-   "prop": {
-    "kind": "tv",
-    "color": "#35c5f4"
-   },
-   "accent": "#35c5f4",
-   "bubbles": {
-    "working": [
-     "Só mais um episódio",
-     "Nova temporada!"
-    ],
-    "busy": [
-     "Baixando a série toda..."
-    ],
-    "stopped": [
-     "Pausei a maratona"
-    ],
-    "error": [
-     "Episódio perdido!"
-    ],
-    "idle": [
-     "Spoiler não!",
-     "Só mais um episódio...",
-     "Saiu temporada nova?"
-    ]
-   },
-   "pants": "#1e3a5f",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "snacks",
-     "sticky"
-    ]
-   },
-   "behavior": {
-    "signature": [
-     "watch-tv",
-     "pace"
-    ],
-    "walkSpeed": 0.9
-   },
-   "screen": "calendar"
-  },
-  {
-   "id": "radarr",
-   "displayName": "Radarr",
-   "role": "Diretor de cinema",
-   "match": {
-    "names": [
-     "radarr"
-    ],
-    "images": [
-     "linuxserver/radarr",
-     "radarr"
-    ]
-   },
-   "skin": "light",
-   "build": "normal",
-   "hair": {
-    "style": "short",
-    "color": "#8a5a2b"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#2b2d33"
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#ffc230",
-    "color2": "#2b2d33"
-   },
-   "facial": [
-    {
-     "kind": "beard",
-     "color": "#8a5a2b"
-    }
-   ],
-   "prop": {
-    "kind": "clapper",
-    "color": "#ffc230"
-   },
-   "accent": "#ffc230",
-   "bubbles": {
-    "working": [
-     "Ação!",
-     "Corta! Próximo filme"
-    ],
-    "busy": [
-     "Rodando várias cenas"
-    ],
-    "stopped": [
-     "Fim das filmagens"
-    ],
-    "error": [
-     "Corta! Deu ruim!"
-    ],
-    "idle": [
-     "Luz, câmera...",
-     "Esse ângulo ficou ótimo",
-     "Precisamos de mais figurantes"
-    ]
-   },
-   "pants": "#3f3f46",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "frame",
-     "books",
-     "cactus"
-    ]
-   },
-   "behavior": {
-    "signature": [
-     "film"
-    ]
-   },
-   "screen": "list"
-  },
-  {
-   "id": "prowlarr",
-   "displayName": "Prowlarr",
-   "role": "Detetive dos indexadores",
-   "match": {
-    "names": [
-     "prowlarr"
-    ],
-    "images": [
-     "prowlarr"
-    ]
-   },
-   "skin": "light",
-   "build": "normal",
-   "hair": {
-    "style": "short",
-    "color": "#3b2a1e"
-   },
-   "top": {
-    "style": "suit",
-    "color": "#b08550"
-   },
-   "prop": {
-    "kind": "magnifier",
-    "color": "#4b5563"
-   },
-   "accent": "#e66000",
-   "desk": {
-    "style": "dark",
-    "decor": [
-     "lamp",
-     "books"
-    ]
-   },
-   "screen": "list",
-   "behavior": {
-    "signature": [
-     "pace",
-     "shelf"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Seguindo uma pista...",
-     "Achei 42 resultados",
-     "Elementar!"
-    ],
-    "working": [
-     "Seguindo uma pista..."
-    ],
-    "busy": [
-     "Vasculhando indexadores"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Perdi a pista!"
-    ]
-   },
-   "head": {
-    "kind": "fedora",
-    "color": "#5b4636",
-    "color2": "#1f2937"
-   },
-   "facial": [
-    {
-     "kind": "mustache",
-     "color": "#3b2a1e"
-    }
-   ]
-  },
-  {
-   "id": "qbittorrent",
-   "displayName": "qBittorrent",
-   "role": "Entregador de pacotes",
-   "match": {
-    "names": [
-     "qbittorrent"
-    ],
-    "images": [
-     "qbittorrent"
-    ]
-   },
-   "skin": "tan",
-   "build": "normal",
-   "hair": {
-    "style": "short",
-    "color": "#1c1917"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#2f67ba"
-   },
-   "prop": {
-    "kind": "box",
-    "color": "#2f67ba"
-   },
-   "accent": "#2f67ba",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "sticky",
-     "snacks"
-    ]
-   },
-   "screen": "list",
-   "behavior": {
-    "signature": [
-     "pace",
-     "coffee"
-    ],
-    "walkSpeed": 1.35
-   },
-   "bubbles": {
-    "idle": [
-     "Entrega a caminho!",
-     "Seed de 2.0, nada mal",
-     "Mais um pacote chegando"
-    ],
-    "working": [
-     "Entrega a caminho!"
-    ],
-    "busy": [
-     "Baixando a 100 MB/s!"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Pacote extraviado!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#1d4ed8",
-    "color2": "#ffffff"
-   },
-   "body": [
-    {
-     "kind": "badge",
-     "color": "#1d4ed8"
-    }
-   ]
-  },
-  {
-   "id": "jellyseerr",
-   "displayName": "Jellyseerr",
-   "role": "Atendente de pedidos",
-   "match": {
-    "names": [
-     "jellyseerr"
-    ],
-    "images": [
-     "jellyseerr"
-    ]
-   },
-   "skin": "dark",
-   "build": "slim",
-   "hair": {
-    "style": "bun",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "suit",
-    "color": "#5b2a9c"
-   },
-   "prop": {
-    "kind": "ticket",
-    "color": "#a855f7"
-   },
-   "accent": "#a855f7",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "frame",
-     "sticky"
-    ]
-   },
-   "screen": "media-grid",
-   "behavior": {
-    "signature": [
-     "watch-tv",
-     "coffee"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Próximo da fila!",
-     "Pedido anotado",
-     "Esse filme já tem!"
-    ],
-    "working": [
-     "Próximo da fila!"
-    ],
-    "busy": [
-     "Fila de pedidos enorme"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Sistema de pedidos fora!"
-    ]
-   },
-   "head": {
-    "kind": "headset",
-    "color": "#a855f7"
-   },
-   "body": [
-    {
-     "kind": "tie",
-     "color": "#a855f7"
-    }
-   ]
-  },
-  {
-   "id": "navidrome",
-   "displayName": "Navidrome",
-   "role": "DJ da casa",
-   "match": {
-    "names": [
-     "navidrome"
-    ],
-    "images": [
-     "navidrome"
-    ]
-   },
-   "skin": "brown",
-   "build": "normal",
-   "hair": {
-    "style": "long",
-    "color": "#1f1410"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#111827"
-   },
-   "prop": {
-    "kind": "vinyl",
-    "color": "#0ea5e9"
-   },
-   "accent": "#0ea5e9",
-   "desk": {
-    "style": "dark",
-    "decor": [
-     "figurine",
-     "lamp"
-    ]
-   },
-   "screen": "media-grid",
-   "behavior": {
-    "signature": [
-     "dance",
-     "watch-tv"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Solta o som!",
-     "Essa é das antigas",
-     "Playlist nova no ar"
-    ],
-    "working": [
-     "Solta o som!"
-    ],
-    "busy": [
-     "Tocando pra galera toda"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Arranhou o disco!"
-    ]
-   },
-   "head": {
-    "kind": "headphones",
-    "color": "#0ea5e9"
-   },
-   "face": {
-    "kind": "sunglasses",
-    "color": "#111111"
-   }
-  },
-  {
-   "id": "immich_server",
-   "displayName": "Immich",
-   "role": "Fotógrafa do escritório",
-   "match": {
-    "names": [
-     "immich_server",
-     "immich-server"
-    ],
-    "images": [
-     "immich-server"
-    ]
-   },
-   "skin": "fair",
-   "build": "normal",
-   "hair": {
-    "style": "ponytail",
-    "color": "#7c2d12"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#4250af"
-   },
-   "prop": {
-    "kind": "photos",
-    "color": "#fa2921",
-    "color2": "#4250af"
-   },
-   "accent": "#4250af",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "frame",
-     "cactus"
-    ]
-   },
-   "screen": "media-grid",
-   "behavior": {
-    "signature": [
-     "photo",
-     "window"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Sorriam!",
-     "Que luz linda hoje",
-     "Mais um álbum pronto"
-    ],
-    "working": [
-     "Sorriam!"
-    ],
-    "busy": [
-     "Processando fotos..."
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Perdi o cartão de memória!"
-    ]
-   },
-   "body": [
-    {
-     "kind": "camera",
-     "color": "#2d2f36"
-    }
-   ]
-  },
-  {
-   "id": "immich_machine_learning",
-   "displayName": "Immich ML",
-   "role": "Cientista de IA",
-   "match": {
-    "names": [
-     "immich_machine_learning",
-     "immich-machine-learning"
-    ],
-    "images": [
-     "immich-machine-learning"
-    ]
-   },
-   "skin": "light",
-   "build": "slim",
-   "hair": {
-    "style": "bald",
-    "color": "#9ca3af"
-   },
-   "top": {
-    "style": "labcoat",
-    "color": "#eef1f5",
-    "color2": "#4250af"
-   },
-   "prop": {
-    "kind": "robot",
-    "color": "#38bdf8"
-   },
-   "accent": "#38bdf8",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "books",
-     "trophy"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "point-dashboard",
-     "whiteboard"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Treinando o modelo...",
-     "Isso é um gato. 97%.",
-     "Reconheci 3 rostos"
-    ],
-    "working": [
-     "Treinando o modelo..."
-    ],
-    "busy": [
-     "Rodando a rede neural!"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "O modelo alucinou!"
-    ]
-   },
-   "face": {
-    "kind": "bigglasses",
-    "color": "#111827"
-   },
-   "facial": [
-    {
-     "kind": "beard",
-     "color": "#d1d5db"
-    }
-   ]
-  },
-  {
-   "id": "immich_redis",
-   "displayName": "Valkey",
-   "role": "Velocista da memória",
-   "match": {
-    "names": [
-     "immich_redis"
-    ],
-    "images": [
-     "valkey/valkey"
-    ]
-   },
-   "skin": "tan",
-   "build": "slim",
-   "hair": {
-    "style": "spiky",
-    "color": "#1e1b4b"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#6366f1"
-   },
-   "prop": {
-    "kind": "bolt",
-    "color": "#a5b4fc"
-   },
-   "accent": "#6366f1",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "trophy",
-     "snacks"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "pace",
-     "coffee"
-    ],
-    "walkSpeed": 1.7
-   },
-   "bubbles": {
-    "idle": [
-     "Já respondi!",
-     "0,2 ms, fácil",
-     "Guardei no cache"
-    ],
-    "working": [
-     "Já respondi!"
-    ],
-    "busy": [
-     "Correndo muito!"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Esqueci tudo!"
-    ]
-   },
-   "head": {
-    "kind": "headband",
-    "color": "#a5b4fc"
-   }
-  },
-  {
-   "id": "immich_postgres",
-   "displayName": "Postgres do Immich",
-   "role": "Bibliotecário do banco",
-   "match": {
-    "names": [
-     "immich_postgres"
-    ],
-    "images": [
-     "immich-app/postgres",
-     "postgres"
-    ]
-   },
-   "skin": "fair",
-   "build": "normal",
-   "hair": {
-    "style": "side",
-    "color": "#9ca3af"
-   },
-   "top": {
-    "style": "suit",
-    "color": "#336791"
-   },
-   "prop": {
-    "kind": "database",
-    "color": "#336791",
-    "color2": "#93c5fd"
-   },
-   "accent": "#336791",
-   "desk": {
-    "style": "dark",
-    "decor": [
-     "books",
-     "lamp",
-     "frame"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "shelf",
-     "coffee"
-    ],
-    "walkSpeed": 0.8
-   },
-   "bubbles": {
-    "idle": [
-     "Tudo indexado",
-     "SELECT * FROM paciencia",
-     "Shhh, biblioteca"
-    ],
-    "working": [
-     "Tudo indexado"
-    ],
-    "busy": [
-     "Consultas pesadas"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Tabela corrompida!"
-    ]
-   },
-   "face": {
-    "kind": "glasses",
-    "color": "#1f2937"
-   },
-   "facial": [
-    {
-     "kind": "beard",
-     "color": "#9ca3af"
-    }
-   ]
-  },
-  {
-   "id": "ntopng-redis",
-   "displayName": "Redis do ntopng",
-   "role": "Mensageiro relâmpago",
-   "match": {
-    "names": [
-     "ntopng-redis"
-    ],
-    "images": [
-     "redis:"
-    ]
-   },
-   "skin": "dark",
-   "build": "normal",
-   "hair": {
-    "style": "curly",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#d82c20"
-   },
-   "prop": {
-    "kind": "bolt",
-    "color": "#fca5a5"
-   },
-   "accent": "#d82c20",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "sticky"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "pace"
-    ],
-    "walkSpeed": 1.6
-   },
-   "bubbles": {
-    "idle": [
-     "Chave salva!",
-     "Rápido como um raio",
-     "PONG"
-    ],
-    "working": [
-     "Chave salva!"
-    ],
-    "busy": [
-     "Mensagens sem fim"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Sem memória!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#d82c20",
-    "color2": "#ffffff"
-   }
-  },
-  {
-   "id": "ntopng",
-   "displayName": "ntopng",
-   "role": "Guarda de trânsito da rede",
-   "match": {
-    "names": [
-     "ntopng"
-    ],
-    "images": [
-     "ntop/ntopng"
-    ]
-   },
-   "skin": "brown",
-   "build": "normal",
-   "hair": {
-    "style": "short",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#1f2937"
-   },
-   "prop": {
-    "kind": "cone",
-    "color": "#f97316"
-   },
-   "accent": "#f97316",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "figurine"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "patrol",
-     "window"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Trânsito fluindo",
-     "Pacote suspeito ali!",
-     "Mantenha a direita"
-    ],
-    "working": [
-     "Trânsito fluindo"
-    ],
-    "busy": [
-     "Engarrafamento de pacotes!"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Perdi a visão da rede!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#111827",
-    "color2": "#f97316"
-   },
-   "body": [
-    {
-     "kind": "vest",
-     "color": "#f97316",
-     "color2": "#f5f5f5"
-    }
-   ]
-  },
-  {
-   "id": "forgejo",
-   "displayName": "Forgejo",
-   "role": "Ferreiro do código",
-   "match": {
-    "names": [
-     "forgejo"
-    ],
-    "images": [
-     "forgejo/forgejo"
-    ]
-   },
-   "skin": "tan",
-   "build": "muscle",
-   "hair": {
-    "style": "short",
-    "color": "#3f2a1d"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#57534e"
-   },
-   "prop": {
-    "kind": "anvil",
-    "color": "#52525b"
-   },
-   "accent": "#fb923c",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "trophy",
-     "books"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "flex",
-     "print"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Forjando um commit",
-     "Merge quentinho!",
-     "Martelo pronto"
-    ],
-    "working": [
-     "Forjando um commit"
-    ],
-    "busy": [
-     "Compilando na bigorna"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Quebrei o martelo!"
-    ]
-   },
-   "facial": [
-    {
-     "kind": "beard",
-     "color": "#3f2a1d"
-    }
-   ],
-   "body": [
-    {
-     "kind": "apron",
-     "color": "#7c4a2a"
-    }
-   ]
-  },
-  {
-   "id": "freshrss",
-   "displayName": "FreshRSS",
-   "role": "Jornaleiro",
-   "match": {
-    "names": [
-     "freshrss"
-    ],
-    "images": [
-     "freshrss/freshrss"
-    ]
-   },
-   "skin": "light",
-   "build": "slim",
-   "hair": {
-    "style": "curly",
-    "color": "#a16207"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#e2e8f0"
-   },
-   "prop": {
-    "kind": "newspaper",
-    "color": "#0062be"
-   },
-   "accent": "#0062be",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "books",
-     "cactus"
-    ]
-   },
-   "screen": "list",
-   "behavior": {
-    "signature": [
-     "pace",
-     "coffee"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Extra! Extra!",
-     "128 notícias novas",
-     "Leia tudo aqui"
-    ],
-    "working": [
-     "Extra! Extra!"
-    ],
-    "busy": [
-     "Imprimindo a edição"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Feed quebrado!"
-    ]
-   },
-   "head": {
-    "kind": "beret",
-    "color": "#475569"
-   },
-   "body": [
-    {
-     "kind": "vest",
-     "color": "#0062be",
-     "color2": "#bfdbfe"
-    }
-   ]
-  },
-  {
-   "id": "glances",
-   "displayName": "Glances",
-   "role": "Olheiro do servidor",
-   "match": {
-    "names": [
-     "glances"
-    ],
-    "images": [
-     "nicolargo/glances"
-    ]
-   },
-   "skin": "fair",
-   "build": "normal",
-   "hair": {
-    "style": "messy",
-    "color": "#57534e"
-   },
-   "top": {
-    "style": "hoodie",
-    "color": "#16a34a"
-   },
-   "prop": {
-    "kind": "binoculars",
-    "color": "#16a34a"
-   },
-   "accent": "#16a34a",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "snacks"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "window",
-     "patrol"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Tô de olho",
-     "Tudo sob controle",
-     "Vi um pico de CPU!"
-    ],
-    "working": [
-     "Tô de olho"
-    ],
-    "busy": [
-     "Olhando tudo ao mesmo tempo"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Fiquei cego!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#14532d",
-    "color2": "#ffffff"
-   }
-  },
-  {
-   "id": "homepage",
-   "displayName": "Homepage",
-   "role": "Recepcionista",
-   "match": {
-    "names": [
-     "homepage"
-    ],
-    "images": [
-     "gethomepage/homepage"
-    ]
-   },
-   "skin": "brown",
-   "build": "slim",
-   "hair": {
-    "style": "long",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "suit",
-    "color": "#0f766e"
-   },
-   "prop": {
-    "kind": "bell",
-    "color": "#eab308"
-   },
-   "accent": "#14b8a6",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "plant",
-     "frame"
-    ]
-   },
-   "screen": "media-grid",
-   "behavior": {
-    "signature": [
-     "patrol",
-     "coffee"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Bem-vindo!",
-     "Todos os links aqui",
-     "Posso ajudar?"
-    ],
-    "working": [
-     "Bem-vindo!"
-    ],
-    "busy": [
-     "Recebendo visitas"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Recepção fechada!"
-    ]
-   },
-   "body": [
-    {
-     "kind": "badge",
-     "color": "#14b8a6"
+      "id": "grafana",
+      "displayName": "Grafana",
+      "role": "Nerd dos gráficos",
+      "match": {
+        "names": [
+          "grafana"
+        ],
+        "images": [
+          "grafana/grafana"
+        ]
+      },
+      "skin": "light",
+      "build": "slim",
+      "hair": {
+        "style": "messy",
+        "color": "#6b4423"
+      },
+      "top": {
+        "style": "hoodie",
+        "color": "#f46800"
+      },
+      "face": {
+        "kind": "bigglasses",
+        "color": "#1f2937"
+      },
+      "head": {
+        "kind": "headset",
+        "color": "#f46800"
+      },
+      "prop": {
+        "kind": "chart",
+        "color": "#22c55e",
+        "color2": "#60a5fa"
+      },
+      "accent": "#f46800",
+      "bubbles": {
+        "working": [
+          "Olha esse gráfico!",
+          "Tudo verde por aqui"
+        ],
+        "busy": [
+          "Renderizando painéis..."
+        ],
+        "stopped": [
+          "Painéis desligados"
+        ],
+        "error": [
+          "Sem dados!"
+        ],
+        "idle": [
+          "Esse pico ali é estranho...",
+          "Mais um painel não faz mal",
+          "Alguém viu meu headset?"
+        ]
+      },
+      "pants": "#334155",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "sticky",
+          "snacks",
+          "figurine"
+        ]
+      },
+      "behavior": {
+        "signature": [
+          "point-dashboard"
+        ]
+      },
+      "screen": "dashboard"
     },
     {
-     "kind": "scarf",
-     "color": "#14b8a6",
-     "color2": "#f5f5f5"
-    }
-   ]
-  },
-  {
-   "id": "dozzle",
-   "displayName": "Dozzle",
-   "role": "Leitor de logs noturno",
-   "match": {
-    "names": [
-     "dozzle"
-    ],
-    "images": [
-     "amir20/dozzle"
-    ]
-   },
-   "skin": "light",
-   "build": "normal",
-   "hair": {
-    "style": "messy",
-    "color": "#1c1917"
-   },
-   "top": {
-    "style": "hoodie",
-    "color": "#4b5563"
-   },
-   "prop": {
-    "kind": "mug",
-    "color": "#1f2937"
-   },
-   "accent": "#38bdf8",
-   "desk": {
-    "style": "dark",
-    "decor": [
-     "lamp",
-     "snacks"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "coffee",
-     "window"
-    ],
-    "walkSpeed": 0.85
-   },
-   "bubbles": {
-    "idle": [
-     "Mais um café...",
-     "Lendo logs desde ontem",
-     "Achei o erro!"
-    ],
-    "working": [
-     "Mais um café..."
-    ],
-    "busy": [
-     "Logs demais!"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Logs sumiram!"
-    ]
-   },
-   "facial": [
-    {
-     "kind": "eyebags",
-     "color": "#94a3b8"
+      "id": "jellyfin",
+      "displayName": "Jellyfin",
+      "role": "Cinéfilo da casa",
+      "match": {
+        "names": [
+          "jellyfin"
+        ],
+        "images": [
+          "jellyfin/jellyfin"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "side",
+        "color": "#3a2a4a"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#2c2f5b"
+      },
+      "head": {
+        "kind": "beret",
+        "color": "#aa5cc3"
+      },
+      "facial": [
+        {
+          "kind": "mustache",
+          "color": "#3a2a4a"
+        }
+      ],
+      "body": [
+        {
+          "kind": "scarf",
+          "color": "#00a4dc",
+          "color2": "#aa5cc3"
+        }
+      ],
+      "prop": {
+        "kind": "popcorn",
+        "color": "#e04848"
+      },
+      "accent": "#aa5cc3",
+      "bubbles": {
+        "working": [
+          "Sessão das 8!",
+          "Pipoca pronta"
+        ],
+        "busy": [
+          "Transcodificando..."
+        ],
+        "stopped": [
+          "Cinema fechado"
+        ],
+        "error": [
+          "O filme travou!"
+        ],
+        "idle": [
+          "Hoje tem sessão dupla",
+          "Esse filme é um clássico",
+          "Cadê a pipoca?"
+        ]
+      },
+      "pants": "#1e1b4b",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "frame",
+          "lamp"
+        ]
+      },
+      "behavior": {
+        "signature": [
+          "watch-tv"
+        ]
+      },
+      "screen": "media-grid"
     },
     {
-     "kind": "stubble",
-     "color": ""
-    }
-   ]
-  },
-  {
-   "id": "kopia",
-   "displayName": "Kopia",
-   "role": "Guarda do cofre de backups",
-   "match": {
-    "names": [
-     "kopia"
-    ],
-    "images": [
-     "kopia/kopia"
-    ]
-   },
-   "skin": "dark",
-   "build": "muscle",
-   "hair": {
-    "style": "bald",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "suit",
-    "color": "#111827"
-   },
-   "prop": {
-    "kind": "safe",
-    "color": "#eab308"
-   },
-   "accent": "#eab308",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "trophy"
-    ]
-   },
-   "screen": "list",
-   "behavior": {
-    "signature": [
-     "patrol"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Backup em dia",
-     "Ninguém mexe no cofre",
-     "Snapshot feito"
-    ],
-    "working": [
-     "Backup em dia"
-    ],
-    "busy": [
-     "Copiando tudo pro cofre"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Cofre arrombado!"
-    ]
-   },
-   "face": {
-    "kind": "sunglasses",
-    "color": "#111111"
-   },
-   "body": [
+      "id": "sonarr",
+      "displayName": "Sonarr",
+      "role": "Maratonista de séries",
+      "match": {
+        "names": [
+          "sonarr"
+        ],
+        "images": [
+          "linuxserver/sonarr",
+          "sonarr"
+        ]
+      },
+      "skin": "brown",
+      "build": "normal",
+      "hair": {
+        "style": "curly",
+        "color": "#1c1714"
+      },
+      "top": {
+        "style": "hoodie",
+        "color": "#35c5f4"
+      },
+      "facial": [
+        {
+          "kind": "eyebags",
+          "color": "#6f89b8"
+        }
+      ],
+      "prop": {
+        "kind": "tv",
+        "color": "#35c5f4"
+      },
+      "accent": "#35c5f4",
+      "bubbles": {
+        "working": [
+          "Só mais um episódio",
+          "Nova temporada!"
+        ],
+        "busy": [
+          "Baixando a série toda..."
+        ],
+        "stopped": [
+          "Pausei a maratona"
+        ],
+        "error": [
+          "Episódio perdido!"
+        ],
+        "idle": [
+          "Spoiler não!",
+          "Só mais um episódio...",
+          "Saiu temporada nova?"
+        ]
+      },
+      "pants": "#1e3a5f",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "snacks",
+          "sticky"
+        ]
+      },
+      "behavior": {
+        "signature": [
+          "watch-tv",
+          "pace"
+        ],
+        "walkSpeed": 0.9
+      },
+      "screen": "calendar"
+    },
     {
-     "kind": "tie",
-     "color": "#eab308"
-    }
-   ]
-  },
-  {
-   "id": "filebrowser",
-   "displayName": "File Browser",
-   "role": "Arquivista",
-   "match": {
-    "names": [
-     "filebrowser"
-    ],
-    "images": [
-     "filebrowser/filebrowser"
-    ]
-   },
-   "skin": "fair",
-   "build": "normal",
-   "hair": {
-    "style": "bun",
-    "color": "#a16207"
-   },
-   "top": {
-    "style": "suit",
-    "color": "#a8a29e"
-   },
-   "prop": {
-    "kind": "folders",
-    "color": "#3b82f6"
-   },
-   "accent": "#3b82f6",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "books",
-     "sticky",
-     "plant"
-    ]
-   },
-   "screen": "list",
-   "behavior": {
-    "signature": [
-     "shelf",
-     "print"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Tudo organizado",
-     "Pasta certa, lugar certo",
-     "Achei o arquivo"
-    ],
-    "working": [
-     "Tudo organizado"
-    ],
-    "busy": [
-     "Mexendo em muitos arquivos"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Arquivo perdido!"
-    ]
-   },
-   "face": {
-    "kind": "glasses",
-    "color": "#92400e"
-   }
-  },
-  {
-   "id": "speedtest-tracker",
-   "displayName": "Speedtest",
-   "role": "Cronometrista",
-   "match": {
-    "names": [
-     "speedtest-tracker"
-    ],
-    "images": [
-     "speedtest-tracker"
-    ]
-   },
-   "skin": "tan",
-   "build": "slim",
-   "hair": {
-    "style": "short",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#e11d48"
-   },
-   "prop": {
-    "kind": "stopwatch",
-    "color": "#e11d48"
-   },
-   "accent": "#e11d48",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "trophy",
-     "snacks"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "pace",
-     "window"
-    ],
-    "walkSpeed": 1.5
-   },
-   "bubbles": {
-    "idle": [
-     "Valendo! 3, 2, 1...",
-     "940 Mbps!",
-     "Bati o recorde"
-    ],
-    "working": [
-     "Valendo! 3, 2, 1..."
-    ],
-    "busy": [
-     "Medindo a velocidade"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Internet caiu!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#e11d48",
-    "color2": "#ffffff"
-   }
-  },
-  {
-   "id": "librespeed",
-   "displayName": "LibreSpeed",
-   "role": "Piloto de testes",
-   "match": {
-    "names": [
-     "librespeed"
-    ],
-    "images": [
-     "librespeed"
-    ]
-   },
-   "skin": "light",
-   "build": "slim",
-   "hair": {
-    "style": "spiky",
-    "color": "#fde047"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#65a30d"
-   },
-   "prop": {
-    "kind": "speedometer",
-    "color": "#ef4444"
-   },
-   "accent": "#65a30d",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "figurine"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "pace",
-     "dance"
-    ],
-    "walkSpeed": 1.8
-   },
-   "bubbles": {
-    "idle": [
-     "Vrum vrum!",
-     "Ping de 3 ms",
-     "Acelera!"
-    ],
-    "working": [
-     "Vrum vrum!"
-    ],
-    "busy": [
-     "Teste em alta velocidade"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Bati o carro!"
-    ]
-   },
-   "head": {
-    "kind": "headband",
-    "color": "#ef4444"
-   }
-  },
-  {
-   "id": "links-hub",
-   "displayName": "Links Hub",
-   "role": "Bibliotecária de links",
-   "match": {
-    "names": [
-     "links-hub"
-    ],
-    "images": [
-     "links-hub"
-    ]
-   },
-   "skin": "brown",
-   "build": "normal",
-   "hair": {
-    "style": "long",
-    "color": "#3f1d0b"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#7c3aed"
-   },
-   "prop": {
-    "kind": "chain",
-    "color": "#a78bfa"
-   },
-   "accent": "#7c3aed",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "sticky",
-     "books",
-     "plant"
-    ]
-   },
-   "screen": "list",
-   "behavior": {
-    "signature": [
-     "whiteboard",
-     "shelf"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Tenho o link certo",
-     "Favoritei!",
-     "Tudo conectado"
-    ],
-    "working": [
-     "Tenho o link certo"
-    ],
-    "busy": [
-     "Organizando links"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Link quebrado!"
-    ]
-   },
-   "face": {
-    "kind": "glasses",
-    "color": "#7c3aed"
-   }
-  },
-  {
-   "id": "mat2-web",
-   "displayName": "MAT2",
-   "role": "Faxineiro de metadados",
-   "match": {
-    "names": [
-     "mat2-web"
-    ],
-    "images": [
-     "mat2"
-    ]
-   },
-   "skin": "fair",
-   "build": "normal",
-   "hair": {
-    "style": "short",
-    "color": "#6b7280"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#0891b2"
-   },
-   "prop": {
-    "kind": "shredder",
-    "color": "#0891b2"
-   },
-   "accent": "#0891b2",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "plant"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "pace",
-     "print"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Limpando os metadados",
-     "Nem rastro sobrou",
-     "Privacidade em dia"
-    ],
-    "working": [
-     "Limpando os metadados"
-    ],
-    "busy": [
-     "Faxina pesada"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Vazou metadado!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#0e7490",
-    "color2": "#ffffff"
-   },
-   "facial": [
+      "id": "radarr",
+      "displayName": "Radarr",
+      "role": "Diretor de cinema",
+      "match": {
+        "names": [
+          "radarr"
+        ],
+        "images": [
+          "linuxserver/radarr",
+          "radarr"
+        ]
+      },
+      "skin": "light",
+      "build": "normal",
+      "hair": {
+        "style": "short",
+        "color": "#8a5a2b"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#2b2d33"
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#ffc230",
+        "color2": "#2b2d33"
+      },
+      "facial": [
+        {
+          "kind": "beard",
+          "color": "#8a5a2b"
+        }
+      ],
+      "prop": {
+        "kind": "clapper",
+        "color": "#ffc230"
+      },
+      "accent": "#ffc230",
+      "bubbles": {
+        "working": [
+          "Ação!",
+          "Corta! Próximo filme"
+        ],
+        "busy": [
+          "Rodando várias cenas"
+        ],
+        "stopped": [
+          "Fim das filmagens"
+        ],
+        "error": [
+          "Corta! Deu ruim!"
+        ],
+        "idle": [
+          "Luz, câmera...",
+          "Esse ângulo ficou ótimo",
+          "Precisamos de mais figurantes"
+        ]
+      },
+      "pants": "#3f3f46",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "frame",
+          "books",
+          "cactus"
+        ]
+      },
+      "behavior": {
+        "signature": [
+          "film"
+        ]
+      },
+      "screen": "list"
+    },
     {
-     "kind": "mustache",
-     "color": "#6b7280"
-    }
-   ],
-   "body": [
+      "id": "prowlarr",
+      "displayName": "Prowlarr",
+      "role": "Detetive dos indexadores",
+      "match": {
+        "names": [
+          "prowlarr"
+        ],
+        "images": [
+          "prowlarr"
+        ]
+      },
+      "skin": "light",
+      "build": "normal",
+      "hair": {
+        "style": "short",
+        "color": "#3b2a1e"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#b08550"
+      },
+      "prop": {
+        "kind": "magnifier",
+        "color": "#4b5563"
+      },
+      "accent": "#e66000",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "lamp",
+          "books"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "pace",
+          "shelf"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Seguindo uma pista...",
+          "Achei 42 resultados",
+          "Elementar!"
+        ],
+        "working": [
+          "Seguindo uma pista..."
+        ],
+        "busy": [
+          "Vasculhando indexadores"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Perdi a pista!"
+        ]
+      },
+      "head": {
+        "kind": "fedora",
+        "color": "#5b4636",
+        "color2": "#1f2937"
+      },
+      "facial": [
+        {
+          "kind": "mustache",
+          "color": "#3b2a1e"
+        }
+      ]
+    },
     {
-     "kind": "apron",
-     "color": "#155e75"
-    }
-   ]
-  },
-  {
-   "id": "juice-shop",
-   "displayName": "Juice Shop",
-   "role": "Vendedor de sucos (cuidado: vulnerável!)",
-   "match": {
-    "names": [
-     "juice-shop"
-    ],
-    "images": [
-     "juice-shop"
-    ]
-   },
-   "skin": "tan",
-   "build": "normal",
-   "hair": {
-    "style": "curly",
-    "color": "#7c2d12"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#fb923c"
-   },
-   "prop": {
-    "kind": "juice",
-    "color": "#f97316"
-   },
-   "accent": "#f97316",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "snacks",
-     "cactus"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "coffee",
-     "dance"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Suco de laranja?",
-     "Promoção de hoje!",
-     "Não clique nesse link..."
-    ],
-    "working": [
-     "Suco de laranja?"
-    ],
-    "busy": [
-     "Fila no balcão"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Fui hackeado!"
-    ]
-   },
-   "head": {
-    "kind": "cap",
-    "color": "#16a34a",
-    "color2": "#fde047"
-   },
-   "body": [
+      "id": "qbittorrent",
+      "displayName": "qBittorrent",
+      "role": "Entregador de pacotes",
+      "match": {
+        "names": [
+          "qbittorrent"
+        ],
+        "images": [
+          "qbittorrent"
+        ]
+      },
+      "skin": "tan",
+      "build": "normal",
+      "hair": {
+        "style": "short",
+        "color": "#1c1917"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#2f67ba"
+      },
+      "prop": {
+        "kind": "box",
+        "color": "#2f67ba"
+      },
+      "accent": "#2f67ba",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "sticky",
+          "snacks"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "pace",
+          "coffee"
+        ],
+        "walkSpeed": 1.35
+      },
+      "bubbles": {
+        "idle": [
+          "Entrega a caminho!",
+          "Seed de 2.0, nada mal",
+          "Mais um pacote chegando"
+        ],
+        "working": [
+          "Entrega a caminho!"
+        ],
+        "busy": [
+          "Baixando a 100 MB/s!"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Pacote extraviado!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#1d4ed8",
+        "color2": "#ffffff"
+      },
+      "body": [
+        {
+          "kind": "badge",
+          "color": "#1d4ed8"
+        }
+      ]
+    },
     {
-     "kind": "apron",
-     "color": "#16a34a"
-    }
-   ]
-  },
-  {
-   "id": "n8n",
-   "displayName": "n8n",
-   "role": "Engenheira de automação",
-   "match": {
-    "names": [
-     "n8n"
-    ],
-    "images": [
-     "n8nio/n8n"
-    ]
-   },
-   "skin": "light",
-   "build": "slim",
-   "hair": {
-    "style": "bun",
-    "color": "#1f2937"
-   },
-   "top": {
-    "style": "hoodie",
-    "color": "#ea4b71"
-   },
-   "prop": {
-    "kind": "flowchart",
-    "color": "#ea4b71",
-    "color2": "#38bdf8"
-   },
-   "accent": "#ea4b71",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "sticky",
-     "figurine"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "whiteboard",
-     "coffee"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Automatizei isso!",
-     "Mais um workflow",
-     "Webhook recebido"
-    ],
-    "working": [
-     "Automatizei isso!"
-    ],
-    "busy": [
-     "Workflows a todo vapor"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Workflow travou!"
-    ]
-   },
-   "head": {
-    "kind": "headset",
-    "color": "#ea4b71"
-   },
-   "face": {
-    "kind": "glasses",
-    "color": "#111827"
-   }
-  },
-  {
-   "id": "prometheus",
-   "displayName": "Prometheus",
-   "role": "Titã que coleta métricas",
-   "match": {
-    "names": [
-     "prometheus"
-    ],
-    "images": [
-     "prom/prometheus"
-    ]
-   },
-   "skin": "tan",
-   "build": "muscle",
-   "hair": {
-    "style": "long",
-    "color": "#7c2d12"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#e6522c"
-   },
-   "prop": {
-    "kind": "torch",
-    "color": "#f97316"
-   },
-   "accent": "#e6522c",
-   "desk": {
-    "style": "dark",
-    "decor": [
-     "trophy",
-     "lamp"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "point-dashboard",
-     "flex"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Trouxe o fogo das métricas",
-     "Scrape concluído",
-     "Tudo medido"
-    ],
-    "working": [
-     "Trouxe o fogo das métricas"
-    ],
-    "busy": [
-     "Coletando métricas!"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "O fogo apagou!"
-    ]
-   },
-   "head": {
-    "kind": "laurel",
-    "color": "#a3e635"
-   },
-   "facial": [
+      "id": "jellyseerr",
+      "displayName": "Jellyseerr",
+      "role": "Atendente de pedidos",
+      "match": {
+        "names": [
+          "jellyseerr"
+        ],
+        "images": [
+          "jellyseerr"
+        ]
+      },
+      "skin": "dark",
+      "build": "slim",
+      "hair": {
+        "style": "bun",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#5b2a9c"
+      },
+      "prop": {
+        "kind": "ticket",
+        "color": "#a855f7"
+      },
+      "accent": "#a855f7",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "frame",
+          "sticky"
+        ]
+      },
+      "screen": "media-grid",
+      "behavior": {
+        "signature": [
+          "watch-tv",
+          "coffee"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Próximo da fila!",
+          "Pedido anotado",
+          "Esse filme já tem!"
+        ],
+        "working": [
+          "Próximo da fila!"
+        ],
+        "busy": [
+          "Fila de pedidos enorme"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Sistema de pedidos fora!"
+        ]
+      },
+      "head": {
+        "kind": "headset",
+        "color": "#a855f7"
+      },
+      "body": [
+        {
+          "kind": "tie",
+          "color": "#a855f7"
+        }
+      ]
+    },
     {
-     "kind": "beard",
-     "color": "#7c2d12"
-    }
-   ],
-   "body": [
+      "id": "navidrome",
+      "displayName": "Navidrome",
+      "role": "DJ da casa",
+      "match": {
+        "names": [
+          "navidrome"
+        ],
+        "images": [
+          "navidrome"
+        ]
+      },
+      "skin": "brown",
+      "build": "normal",
+      "hair": {
+        "style": "long",
+        "color": "#1f1410"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#111827"
+      },
+      "prop": {
+        "kind": "vinyl",
+        "color": "#0ea5e9"
+      },
+      "accent": "#0ea5e9",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "figurine",
+          "lamp"
+        ]
+      },
+      "screen": "media-grid",
+      "behavior": {
+        "signature": [
+          "dance",
+          "watch-tv"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Solta o som!",
+          "Essa é das antigas",
+          "Playlist nova no ar"
+        ],
+        "working": [
+          "Solta o som!"
+        ],
+        "busy": [
+          "Tocando pra galera toda"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Arranhou o disco!"
+        ]
+      },
+      "head": {
+        "kind": "headphones",
+        "color": "#0ea5e9"
+      },
+      "face": {
+        "kind": "sunglasses",
+        "color": "#111111"
+      }
+    },
     {
-     "kind": "scarf",
-     "color": "#fde68a",
-     "color2": "#e6522c"
-    }
-   ]
-  },
-  {
-   "id": "node-exporter",
-   "displayName": "Node Exporter",
-   "role": "Estagiário da prancheta",
-   "match": {
-    "names": [
-     "node-exporter"
-    ],
-    "images": [
-     "prom/node-exporter"
-    ]
-   },
-   "skin": "fair",
-   "build": "slim",
-   "hair": {
-    "style": "side",
-    "color": "#a16207"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#f97316"
-   },
-   "prop": {
-    "kind": "clipboard",
-    "color": "#f97316"
-   },
-   "accent": "#fb923c",
-   "desk": {
-    "style": "wood",
-    "decor": [
-     "sticky"
-    ]
-   },
-   "screen": "terminal",
-   "behavior": {
-    "signature": [
-     "pace",
-     "print"
-    ],
-    "walkSpeed": 1.3
-   },
-   "bubbles": {
-    "idle": [
-     "Anotei a temperatura",
-     "CPU: ok, disco: ok",
-     "Chefe, terminei!"
-    ],
-    "working": [
-     "Anotei a temperatura"
-    ],
-    "busy": [
-     "Anotando tudo"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Perdi a prancheta!"
-    ]
-   },
-   "face": {
-    "kind": "glasses",
-    "color": "#1f2937"
-   },
-   "body": [
+      "id": "immich_server",
+      "displayName": "Immich",
+      "role": "Fotógrafa do escritório",
+      "match": {
+        "names": [
+          "immich_server",
+          "immich-server"
+        ],
+        "images": [
+          "immich-server"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "ponytail",
+        "color": "#7c2d12"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#4250af"
+      },
+      "prop": {
+        "kind": "photos",
+        "color": "#fa2921",
+        "color2": "#4250af"
+      },
+      "accent": "#4250af",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "frame",
+          "cactus"
+        ]
+      },
+      "screen": "media-grid",
+      "behavior": {
+        "signature": [
+          "photo",
+          "window"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Sorriam!",
+          "Que luz linda hoje",
+          "Mais um álbum pronto"
+        ],
+        "working": [
+          "Sorriam!"
+        ],
+        "busy": [
+          "Processando fotos..."
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Perdi o cartão de memória!"
+        ]
+      },
+      "body": [
+        {
+          "kind": "camera",
+          "color": "#2d2f36"
+        }
+      ]
+    },
     {
-     "kind": "badge",
-     "color": "#f97316"
-    }
-   ]
-  },
-  {
-   "id": "cadvisor",
-   "displayName": "cAdvisor",
-   "role": "Inspetora de containers",
-   "match": {
-    "names": [
-     "cadvisor"
-    ],
-    "images": [
-     "cadvisor"
-    ]
-   },
-   "skin": "brown",
-   "build": "normal",
-   "hair": {
-    "style": "ponytail",
-    "color": "#111111"
-   },
-   "top": {
-    "style": "tee",
-    "color": "#1d4ed8"
-   },
-   "prop": {
-    "kind": "container",
-    "color": "#2563eb"
-   },
-   "accent": "#2563eb",
-   "desk": {
-    "style": "metal",
-    "decor": [
-     "figurine",
-     "sticky"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "patrol",
-     "point-dashboard"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Container inspecionado",
-     "Tudo nos conformes",
-     "Esse está gastando muito"
-    ],
-    "working": [
-     "Container inspecionado"
-    ],
-    "busy": [
-     "Inspeção em massa"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Perdi a contagem!"
-    ]
-   },
-   "head": {
-    "kind": "hardhat",
-    "color": "#facc15"
-   },
-   "body": [
+      "id": "immich_machine_learning",
+      "displayName": "Immich ML",
+      "role": "Cientista de IA",
+      "match": {
+        "names": [
+          "immich_machine_learning",
+          "immich-machine-learning"
+        ],
+        "images": [
+          "immich-machine-learning"
+        ]
+      },
+      "skin": "light",
+      "build": "slim",
+      "hair": {
+        "style": "bald",
+        "color": "#9ca3af"
+      },
+      "top": {
+        "style": "labcoat",
+        "color": "#eef1f5",
+        "color2": "#4250af"
+      },
+      "prop": {
+        "kind": "robot",
+        "color": "#38bdf8"
+      },
+      "accent": "#38bdf8",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "books",
+          "trophy"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "point-dashboard",
+          "whiteboard"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Treinando o modelo...",
+          "Isso é um gato. 97%.",
+          "Reconheci 3 rostos"
+        ],
+        "working": [
+          "Treinando o modelo..."
+        ],
+        "busy": [
+          "Rodando a rede neural!"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "O modelo alucinou!"
+        ]
+      },
+      "face": {
+        "kind": "bigglasses",
+        "color": "#111827"
+      },
+      "facial": [
+        {
+          "kind": "beard",
+          "color": "#d1d5db"
+        }
+      ]
+    },
     {
-     "kind": "vest",
-     "color": "#facc15",
-     "color2": "#f5f5f5"
-    }
-   ]
-  },
-  {
-   "id": "scrutiny",
-   "displayName": "Scrutiny",
-   "role": "Médico dos discos",
-   "match": {
-    "names": [
-     "scrutiny"
-    ],
-    "images": [
-     "analogj/scrutiny"
-    ]
-   },
-   "skin": "light",
-   "build": "normal",
-   "hair": {
-    "style": "short",
-    "color": "#57534e"
-   },
-   "top": {
-    "style": "labcoat",
-    "color": "#eef1f5",
-    "color2": "#0f766e"
-   },
-   "prop": {
-    "kind": "hdd",
-    "color": "#ef4444"
-   },
-   "accent": "#0f766e",
-   "desk": {
-    "style": "white",
-    "decor": [
-     "plant",
-     "frame"
-    ]
-   },
-   "screen": "dashboard",
-   "behavior": {
-    "signature": [
-     "shelf",
-     "whiteboard"
-    ]
-   },
-   "bubbles": {
-    "idle": [
-     "Disco saudável",
-     "Diga \"SMART\"",
-     "Setores em dia"
-    ],
-    "working": [
-     "Disco saudável"
-    ],
-    "busy": [
-     "Exame completo dos discos"
-    ],
-    "stopped": [
-     "Fora do expediente"
-    ],
-    "error": [
-     "Disco na UTI!"
-    ]
-   },
-   "face": {
-    "kind": "glasses",
-    "color": "#111827"
-   },
-   "body": [
+      "id": "immich_redis",
+      "displayName": "Valkey",
+      "role": "Velocista da memória",
+      "match": {
+        "names": [
+          "immich_redis"
+        ],
+        "images": [
+          "valkey/valkey"
+        ]
+      },
+      "skin": "tan",
+      "build": "slim",
+      "hair": {
+        "style": "spiky",
+        "color": "#1e1b4b"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#6366f1"
+      },
+      "prop": {
+        "kind": "bolt",
+        "color": "#a5b4fc"
+      },
+      "accent": "#6366f1",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "trophy",
+          "snacks"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "pace",
+          "coffee"
+        ],
+        "walkSpeed": 1.7
+      },
+      "bubbles": {
+        "idle": [
+          "Já respondi!",
+          "0,2 ms, fácil",
+          "Guardei no cache"
+        ],
+        "working": [
+          "Já respondi!"
+        ],
+        "busy": [
+          "Correndo muito!"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Esqueci tudo!"
+        ]
+      },
+      "head": {
+        "kind": "headband",
+        "color": "#a5b4fc"
+      }
+    },
     {
-     "kind": "stethoscope",
-     "color": "#1f2937"
+      "id": "immich_postgres",
+      "displayName": "Postgres do Immich",
+      "role": "Bibliotecário do banco",
+      "match": {
+        "names": [
+          "immich_postgres"
+        ],
+        "images": [
+          "immich-app/postgres",
+          "postgres"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "side",
+        "color": "#9ca3af"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#336791"
+      },
+      "prop": {
+        "kind": "database",
+        "color": "#336791",
+        "color2": "#93c5fd"
+      },
+      "accent": "#336791",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "books",
+          "lamp",
+          "frame"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "shelf",
+          "coffee"
+        ],
+        "walkSpeed": 0.8
+      },
+      "bubbles": {
+        "idle": [
+          "Tudo indexado",
+          "SELECT * FROM paciencia",
+          "Shhh, biblioteca"
+        ],
+        "working": [
+          "Tudo indexado"
+        ],
+        "busy": [
+          "Consultas pesadas"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Tabela corrompida!"
+        ]
+      },
+      "face": {
+        "kind": "glasses",
+        "color": "#1f2937"
+      },
+      "facial": [
+        {
+          "kind": "beard",
+          "color": "#9ca3af"
+        }
+      ]
+    },
+    {
+      "id": "ntopng-redis",
+      "displayName": "Redis do ntopng",
+      "role": "Mensageiro relâmpago",
+      "match": {
+        "names": [
+          "ntopng-redis"
+        ],
+        "images": [
+          "redis:"
+        ]
+      },
+      "skin": "dark",
+      "build": "normal",
+      "hair": {
+        "style": "curly",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#d82c20"
+      },
+      "prop": {
+        "kind": "bolt",
+        "color": "#fca5a5"
+      },
+      "accent": "#d82c20",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "sticky"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "pace"
+        ],
+        "walkSpeed": 1.6
+      },
+      "bubbles": {
+        "idle": [
+          "Chave salva!",
+          "Rápido como um raio",
+          "PONG"
+        ],
+        "working": [
+          "Chave salva!"
+        ],
+        "busy": [
+          "Mensagens sem fim"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Sem memória!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#d82c20",
+        "color2": "#ffffff"
+      }
+    },
+    {
+      "id": "ntopng",
+      "displayName": "ntopng",
+      "role": "Guarda de trânsito da rede",
+      "match": {
+        "names": [
+          "ntopng"
+        ],
+        "images": [
+          "ntop/ntopng"
+        ]
+      },
+      "skin": "brown",
+      "build": "normal",
+      "hair": {
+        "style": "short",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#1f2937"
+      },
+      "prop": {
+        "kind": "cone",
+        "color": "#f97316"
+      },
+      "accent": "#f97316",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "figurine"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "patrol",
+          "window"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Trânsito fluindo",
+          "Pacote suspeito ali!",
+          "Mantenha a direita"
+        ],
+        "working": [
+          "Trânsito fluindo"
+        ],
+        "busy": [
+          "Engarrafamento de pacotes!"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Perdi a visão da rede!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#111827",
+        "color2": "#f97316"
+      },
+      "body": [
+        {
+          "kind": "vest",
+          "color": "#f97316",
+          "color2": "#f5f5f5"
+        }
+      ]
+    },
+    {
+      "id": "forgejo",
+      "displayName": "Forgejo",
+      "role": "Ferreiro do código",
+      "match": {
+        "names": [
+          "forgejo"
+        ],
+        "images": [
+          "forgejo/forgejo"
+        ]
+      },
+      "skin": "tan",
+      "build": "muscle",
+      "hair": {
+        "style": "short",
+        "color": "#3f2a1d"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#57534e"
+      },
+      "prop": {
+        "kind": "anvil",
+        "color": "#52525b"
+      },
+      "accent": "#fb923c",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "trophy",
+          "books"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "flex",
+          "print"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Forjando um commit",
+          "Merge quentinho!",
+          "Martelo pronto"
+        ],
+        "working": [
+          "Forjando um commit"
+        ],
+        "busy": [
+          "Compilando na bigorna"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Quebrei o martelo!"
+        ]
+      },
+      "facial": [
+        {
+          "kind": "beard",
+          "color": "#3f2a1d"
+        }
+      ],
+      "body": [
+        {
+          "kind": "apron",
+          "color": "#7c4a2a"
+        }
+      ]
+    },
+    {
+      "id": "freshrss",
+      "displayName": "FreshRSS",
+      "role": "Jornaleiro",
+      "match": {
+        "names": [
+          "freshrss"
+        ],
+        "images": [
+          "freshrss/freshrss"
+        ]
+      },
+      "skin": "light",
+      "build": "slim",
+      "hair": {
+        "style": "curly",
+        "color": "#a16207"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#e2e8f0"
+      },
+      "prop": {
+        "kind": "newspaper",
+        "color": "#0062be"
+      },
+      "accent": "#0062be",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "books",
+          "cactus"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "pace",
+          "coffee"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Extra! Extra!",
+          "128 notícias novas",
+          "Leia tudo aqui"
+        ],
+        "working": [
+          "Extra! Extra!"
+        ],
+        "busy": [
+          "Imprimindo a edição"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Feed quebrado!"
+        ]
+      },
+      "head": {
+        "kind": "beret",
+        "color": "#475569"
+      },
+      "body": [
+        {
+          "kind": "vest",
+          "color": "#0062be",
+          "color2": "#bfdbfe"
+        }
+      ]
+    },
+    {
+      "id": "glances",
+      "displayName": "Glances",
+      "role": "Olheiro do servidor",
+      "match": {
+        "names": [
+          "glances"
+        ],
+        "images": [
+          "nicolargo/glances"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "messy",
+        "color": "#57534e"
+      },
+      "top": {
+        "style": "hoodie",
+        "color": "#16a34a"
+      },
+      "prop": {
+        "kind": "binoculars",
+        "color": "#16a34a"
+      },
+      "accent": "#16a34a",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "snacks"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "window",
+          "patrol"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Tô de olho",
+          "Tudo sob controle",
+          "Vi um pico de CPU!"
+        ],
+        "working": [
+          "Tô de olho"
+        ],
+        "busy": [
+          "Olhando tudo ao mesmo tempo"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Fiquei cego!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#14532d",
+        "color2": "#ffffff"
+      }
+    },
+    {
+      "id": "homepage",
+      "displayName": "Homepage",
+      "role": "Recepcionista",
+      "match": {
+        "names": [
+          "homepage"
+        ],
+        "images": [
+          "gethomepage/homepage"
+        ]
+      },
+      "skin": "brown",
+      "build": "slim",
+      "hair": {
+        "style": "long",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#0f766e"
+      },
+      "prop": {
+        "kind": "bell",
+        "color": "#eab308"
+      },
+      "accent": "#14b8a6",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "plant",
+          "frame"
+        ]
+      },
+      "screen": "media-grid",
+      "behavior": {
+        "signature": [
+          "patrol",
+          "coffee"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Bem-vindo!",
+          "Todos os links aqui",
+          "Posso ajudar?"
+        ],
+        "working": [
+          "Bem-vindo!"
+        ],
+        "busy": [
+          "Recebendo visitas"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Recepção fechada!"
+        ]
+      },
+      "body": [
+        {
+          "kind": "badge",
+          "color": "#14b8a6"
+        },
+        {
+          "kind": "scarf",
+          "color": "#14b8a6",
+          "color2": "#f5f5f5"
+        }
+      ]
+    },
+    {
+      "id": "dozzle",
+      "displayName": "Dozzle",
+      "role": "Leitor de logs noturno",
+      "match": {
+        "names": [
+          "dozzle"
+        ],
+        "images": [
+          "amir20/dozzle"
+        ]
+      },
+      "skin": "light",
+      "build": "normal",
+      "hair": {
+        "style": "messy",
+        "color": "#1c1917"
+      },
+      "top": {
+        "style": "hoodie",
+        "color": "#4b5563"
+      },
+      "prop": {
+        "kind": "mug",
+        "color": "#1f2937"
+      },
+      "accent": "#38bdf8",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "lamp",
+          "snacks"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "coffee",
+          "window"
+        ],
+        "walkSpeed": 0.85
+      },
+      "bubbles": {
+        "idle": [
+          "Mais um café...",
+          "Lendo logs desde ontem",
+          "Achei o erro!"
+        ],
+        "working": [
+          "Mais um café..."
+        ],
+        "busy": [
+          "Logs demais!"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Logs sumiram!"
+        ]
+      },
+      "facial": [
+        {
+          "kind": "eyebags",
+          "color": "#94a3b8"
+        },
+        {
+          "kind": "stubble",
+          "color": ""
+        }
+      ]
+    },
+    {
+      "id": "kopia",
+      "displayName": "Kopia",
+      "role": "Guarda do cofre de backups",
+      "match": {
+        "names": [
+          "kopia"
+        ],
+        "images": [
+          "kopia/kopia"
+        ]
+      },
+      "skin": "dark",
+      "build": "muscle",
+      "hair": {
+        "style": "bald",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#111827"
+      },
+      "prop": {
+        "kind": "safe",
+        "color": "#eab308"
+      },
+      "accent": "#eab308",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "trophy"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "patrol"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Backup em dia",
+          "Ninguém mexe no cofre",
+          "Snapshot feito"
+        ],
+        "working": [
+          "Backup em dia"
+        ],
+        "busy": [
+          "Copiando tudo pro cofre"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Cofre arrombado!"
+        ]
+      },
+      "face": {
+        "kind": "sunglasses",
+        "color": "#111111"
+      },
+      "body": [
+        {
+          "kind": "tie",
+          "color": "#eab308"
+        }
+      ]
+    },
+    {
+      "id": "filebrowser",
+      "displayName": "File Browser",
+      "role": "Arquivista",
+      "match": {
+        "names": [
+          "filebrowser"
+        ],
+        "images": [
+          "filebrowser/filebrowser"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "bun",
+        "color": "#a16207"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#a8a29e"
+      },
+      "prop": {
+        "kind": "folders",
+        "color": "#3b82f6"
+      },
+      "accent": "#3b82f6",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "books",
+          "sticky",
+          "plant"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "shelf",
+          "print"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Tudo organizado",
+          "Pasta certa, lugar certo",
+          "Achei o arquivo"
+        ],
+        "working": [
+          "Tudo organizado"
+        ],
+        "busy": [
+          "Mexendo em muitos arquivos"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Arquivo perdido!"
+        ]
+      },
+      "face": {
+        "kind": "glasses",
+        "color": "#92400e"
+      }
+    },
+    {
+      "id": "speedtest-tracker",
+      "displayName": "Speedtest",
+      "role": "Cronometrista",
+      "match": {
+        "names": [
+          "speedtest-tracker"
+        ],
+        "images": [
+          "speedtest-tracker"
+        ]
+      },
+      "skin": "tan",
+      "build": "slim",
+      "hair": {
+        "style": "short",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#e11d48"
+      },
+      "prop": {
+        "kind": "stopwatch",
+        "color": "#e11d48"
+      },
+      "accent": "#e11d48",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "trophy",
+          "snacks"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "pace",
+          "window"
+        ],
+        "walkSpeed": 1.5
+      },
+      "bubbles": {
+        "idle": [
+          "Valendo! 3, 2, 1...",
+          "940 Mbps!",
+          "Bati o recorde"
+        ],
+        "working": [
+          "Valendo! 3, 2, 1..."
+        ],
+        "busy": [
+          "Medindo a velocidade"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Internet caiu!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#e11d48",
+        "color2": "#ffffff"
+      }
+    },
+    {
+      "id": "librespeed",
+      "displayName": "LibreSpeed",
+      "role": "Piloto de testes",
+      "match": {
+        "names": [
+          "librespeed"
+        ],
+        "images": [
+          "librespeed"
+        ]
+      },
+      "skin": "light",
+      "build": "slim",
+      "hair": {
+        "style": "spiky",
+        "color": "#fde047"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#65a30d"
+      },
+      "prop": {
+        "kind": "speedometer",
+        "color": "#ef4444"
+      },
+      "accent": "#65a30d",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "figurine"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "pace",
+          "dance"
+        ],
+        "walkSpeed": 1.8
+      },
+      "bubbles": {
+        "idle": [
+          "Vrum vrum!",
+          "Ping de 3 ms",
+          "Acelera!"
+        ],
+        "working": [
+          "Vrum vrum!"
+        ],
+        "busy": [
+          "Teste em alta velocidade"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Bati o carro!"
+        ]
+      },
+      "head": {
+        "kind": "headband",
+        "color": "#ef4444"
+      }
+    },
+    {
+      "id": "links-hub",
+      "displayName": "Links Hub",
+      "role": "Bibliotecária de links",
+      "match": {
+        "names": [
+          "links-hub"
+        ],
+        "images": [
+          "links-hub"
+        ]
+      },
+      "skin": "brown",
+      "build": "normal",
+      "hair": {
+        "style": "long",
+        "color": "#3f1d0b"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#7c3aed"
+      },
+      "prop": {
+        "kind": "chain",
+        "color": "#a78bfa"
+      },
+      "accent": "#7c3aed",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "sticky",
+          "books",
+          "plant"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "whiteboard",
+          "shelf"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Tenho o link certo",
+          "Favoritei!",
+          "Tudo conectado"
+        ],
+        "working": [
+          "Tenho o link certo"
+        ],
+        "busy": [
+          "Organizando links"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Link quebrado!"
+        ]
+      },
+      "face": {
+        "kind": "glasses",
+        "color": "#7c3aed"
+      }
+    },
+    {
+      "id": "mat2-web",
+      "displayName": "MAT2",
+      "role": "Faxineiro de metadados",
+      "match": {
+        "names": [
+          "mat2-web"
+        ],
+        "images": [
+          "mat2"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "short",
+        "color": "#6b7280"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#0891b2"
+      },
+      "prop": {
+        "kind": "shredder",
+        "color": "#0891b2"
+      },
+      "accent": "#0891b2",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "plant"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "pace",
+          "print"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Limpando os metadados",
+          "Nem rastro sobrou",
+          "Privacidade em dia"
+        ],
+        "working": [
+          "Limpando os metadados"
+        ],
+        "busy": [
+          "Faxina pesada"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Vazou metadado!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#0e7490",
+        "color2": "#ffffff"
+      },
+      "facial": [
+        {
+          "kind": "mustache",
+          "color": "#6b7280"
+        }
+      ],
+      "body": [
+        {
+          "kind": "apron",
+          "color": "#155e75"
+        }
+      ]
+    },
+    {
+      "id": "juice-shop",
+      "displayName": "Juice Shop",
+      "role": "Vendedor de sucos (cuidado: vulnerável!)",
+      "match": {
+        "names": [
+          "juice-shop"
+        ],
+        "images": [
+          "juice-shop"
+        ]
+      },
+      "skin": "tan",
+      "build": "normal",
+      "hair": {
+        "style": "curly",
+        "color": "#7c2d12"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#fb923c"
+      },
+      "prop": {
+        "kind": "juice",
+        "color": "#f97316"
+      },
+      "accent": "#f97316",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "snacks",
+          "cactus"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "coffee",
+          "dance"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Suco de laranja?",
+          "Promoção de hoje!",
+          "Não clique nesse link..."
+        ],
+        "working": [
+          "Suco de laranja?"
+        ],
+        "busy": [
+          "Fila no balcão"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Fui hackeado!"
+        ]
+      },
+      "head": {
+        "kind": "cap",
+        "color": "#16a34a",
+        "color2": "#fde047"
+      },
+      "body": [
+        {
+          "kind": "apron",
+          "color": "#16a34a"
+        }
+      ]
+    },
+    {
+      "id": "n8n",
+      "displayName": "n8n",
+      "role": "Engenheira de automação",
+      "match": {
+        "names": [
+          "n8n"
+        ],
+        "images": [
+          "n8nio/n8n"
+        ]
+      },
+      "skin": "light",
+      "build": "slim",
+      "hair": {
+        "style": "bun",
+        "color": "#1f2937"
+      },
+      "top": {
+        "style": "hoodie",
+        "color": "#ea4b71"
+      },
+      "prop": {
+        "kind": "flowchart",
+        "color": "#ea4b71",
+        "color2": "#38bdf8"
+      },
+      "accent": "#ea4b71",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "sticky",
+          "figurine"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "whiteboard",
+          "coffee"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Automatizei isso!",
+          "Mais um workflow",
+          "Webhook recebido"
+        ],
+        "working": [
+          "Automatizei isso!"
+        ],
+        "busy": [
+          "Workflows a todo vapor"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Workflow travou!"
+        ]
+      },
+      "head": {
+        "kind": "headset",
+        "color": "#ea4b71"
+      },
+      "face": {
+        "kind": "glasses",
+        "color": "#111827"
+      }
+    },
+    {
+      "id": "prometheus",
+      "displayName": "Prometheus",
+      "role": "Titã que coleta métricas",
+      "match": {
+        "names": [
+          "prometheus"
+        ],
+        "images": [
+          "prom/prometheus"
+        ]
+      },
+      "skin": "tan",
+      "build": "muscle",
+      "hair": {
+        "style": "long",
+        "color": "#7c2d12"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#e6522c"
+      },
+      "prop": {
+        "kind": "torch",
+        "color": "#f97316"
+      },
+      "accent": "#e6522c",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "trophy",
+          "lamp"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "point-dashboard",
+          "flex"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Trouxe o fogo das métricas",
+          "Scrape concluído",
+          "Tudo medido"
+        ],
+        "working": [
+          "Trouxe o fogo das métricas"
+        ],
+        "busy": [
+          "Coletando métricas!"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "O fogo apagou!"
+        ]
+      },
+      "head": {
+        "kind": "laurel",
+        "color": "#a3e635"
+      },
+      "facial": [
+        {
+          "kind": "beard",
+          "color": "#7c2d12"
+        }
+      ],
+      "body": [
+        {
+          "kind": "scarf",
+          "color": "#fde68a",
+          "color2": "#e6522c"
+        }
+      ]
+    },
+    {
+      "id": "node-exporter",
+      "displayName": "Node Exporter",
+      "role": "Estagiário da prancheta",
+      "match": {
+        "names": [
+          "node-exporter"
+        ],
+        "images": [
+          "prom/node-exporter"
+        ]
+      },
+      "skin": "fair",
+      "build": "slim",
+      "hair": {
+        "style": "side",
+        "color": "#a16207"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#f97316"
+      },
+      "prop": {
+        "kind": "clipboard",
+        "color": "#f97316"
+      },
+      "accent": "#fb923c",
+      "desk": {
+        "style": "wood",
+        "decor": [
+          "sticky"
+        ]
+      },
+      "screen": "terminal",
+      "behavior": {
+        "signature": [
+          "pace",
+          "print"
+        ],
+        "walkSpeed": 1.3
+      },
+      "bubbles": {
+        "idle": [
+          "Anotei a temperatura",
+          "CPU: ok, disco: ok",
+          "Chefe, terminei!"
+        ],
+        "working": [
+          "Anotei a temperatura"
+        ],
+        "busy": [
+          "Anotando tudo"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Perdi a prancheta!"
+        ]
+      },
+      "face": {
+        "kind": "glasses",
+        "color": "#1f2937"
+      },
+      "body": [
+        {
+          "kind": "badge",
+          "color": "#f97316"
+        }
+      ]
+    },
+    {
+      "id": "cadvisor",
+      "displayName": "cAdvisor",
+      "role": "Inspetora de containers",
+      "match": {
+        "names": [
+          "cadvisor"
+        ],
+        "images": [
+          "cadvisor"
+        ]
+      },
+      "skin": "brown",
+      "build": "normal",
+      "hair": {
+        "style": "ponytail",
+        "color": "#111111"
+      },
+      "top": {
+        "style": "tee",
+        "color": "#1d4ed8"
+      },
+      "prop": {
+        "kind": "container",
+        "color": "#2563eb"
+      },
+      "accent": "#2563eb",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "figurine",
+          "sticky"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "patrol",
+          "point-dashboard"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Container inspecionado",
+          "Tudo nos conformes",
+          "Esse está gastando muito"
+        ],
+        "working": [
+          "Container inspecionado"
+        ],
+        "busy": [
+          "Inspeção em massa"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Perdi a contagem!"
+        ]
+      },
+      "head": {
+        "kind": "hardhat",
+        "color": "#facc15"
+      },
+      "body": [
+        {
+          "kind": "vest",
+          "color": "#facc15",
+          "color2": "#f5f5f5"
+        }
+      ]
+    },
+    {
+      "id": "scrutiny",
+      "displayName": "Scrutiny",
+      "role": "Médico dos discos",
+      "match": {
+        "names": [
+          "scrutiny"
+        ],
+        "images": [
+          "analogj/scrutiny"
+        ]
+      },
+      "skin": "light",
+      "build": "normal",
+      "hair": {
+        "style": "short",
+        "color": "#57534e"
+      },
+      "top": {
+        "style": "labcoat",
+        "color": "#eef1f5",
+        "color2": "#0f766e"
+      },
+      "prop": {
+        "kind": "hdd",
+        "color": "#ef4444"
+      },
+      "accent": "#0f766e",
+      "desk": {
+        "style": "white",
+        "decor": [
+          "plant",
+          "frame"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "shelf",
+          "whiteboard"
+        ]
+      },
+      "bubbles": {
+        "idle": [
+          "Disco saudável",
+          "Diga \"SMART\"",
+          "Setores em dia"
+        ],
+        "working": [
+          "Disco saudável"
+        ],
+        "busy": [
+          "Exame completo dos discos"
+        ],
+        "stopped": [
+          "Fora do expediente"
+        ],
+        "error": [
+          "Disco na UTI!"
+        ]
+      },
+      "face": {
+        "kind": "glasses",
+        "color": "#111827"
+      },
+      "body": [
+        {
+          "kind": "stethoscope",
+          "color": "#1f2937"
+        }
+      ]
+    },
+    {
+      "id": "socket-proxy",
+      "displayName": "Porteiro",
+      "role": "Porteiro do Docker (só deixa ler)",
+      "match": {
+        "names": [
+          "socket-proxy",
+          "docker-socket-proxy"
+        ],
+        "images": [
+          "docker-socket-proxy",
+          "socket-proxy"
+        ]
+      },
+      "skin": "tan",
+      "build": "muscle",
+      "hair": {
+        "style": "bald",
+        "color": "#1c1714"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#1f2937",
+        "color2": "#111827"
+      },
+      "pants": "#111827",
+      "face": {
+        "kind": "sunglasses",
+        "color": "#0b0b0b"
+      },
+      "body": [
+        {
+          "kind": "badge",
+          "color": "#facc15"
+        }
+      ],
+      "prop": {
+        "kind": "clipboard",
+        "color": "#facc15"
+      },
+      "accent": "#facc15",
+      "desk": {
+        "style": "metal",
+        "decor": [
+          "lamp"
+        ]
+      },
+      "screen": "list",
+      "behavior": {
+        "signature": [
+          "patrol",
+          "window"
+        ],
+        "walkSpeed": 0.8
+      },
+      "bubbles": {
+        "idle": [
+          "Nome na lista?",
+          "Aqui só entra GET.",
+          "POST? Nem pensar."
+        ],
+        "working": [
+          "Conferindo credenciais"
+        ],
+        "busy": [
+          "Fila grande na porta!"
+        ],
+        "stopped": [
+          "Portaria fechada"
+        ],
+        "error": [
+          "Alguém forçou a porta!"
+        ]
+      }
+    },
+    {
+      "id": "docker-office",
+      "displayName": "Gerente",
+      "role": "Gerente do escritório (o próprio Docker Office)",
+      "match": {
+        "names": [
+          "docker-office"
+        ],
+        "images": [
+          "docker-office"
+        ]
+      },
+      "skin": "fair",
+      "build": "normal",
+      "hair": {
+        "style": "side",
+        "color": "#6b4423"
+      },
+      "top": {
+        "style": "suit",
+        "color": "#1d4ed8",
+        "color2": "#f8fafc"
+      },
+      "pants": "#1e293b",
+      "face": {
+        "kind": "glasses",
+        "color": "#1f2937"
+      },
+      "body": [
+        {
+          "kind": "tie",
+          "color": "#dc2626"
+        }
+      ],
+      "prop": {
+        "kind": "clipboard",
+        "color": "#2563eb"
+      },
+      "accent": "#2563eb",
+      "desk": {
+        "style": "dark",
+        "decor": [
+          "trophy",
+          "frame"
+        ]
+      },
+      "screen": "dashboard",
+      "behavior": {
+        "signature": [
+          "point-dashboard",
+          "whiteboard",
+          "coffee"
+        ],
+        "walkSpeed": 1.0
+      },
+      "bubbles": {
+        "idle": [
+          "Todo mundo trabalhando?",
+          "Reunião às 15h!",
+          "Quem pegou meu grampeador?"
+        ],
+        "working": [
+          "De olho em todo mundo"
+        ],
+        "busy": [
+          "Muita coisa pra vigiar!"
+        ],
+        "stopped": [
+          "Fui pra casa (quem vigia?)"
+        ],
+        "error": [
+          "O gerente caiu!"
+        ]
+      }
     }
-   ]
-  }
- ]
+  ]
 }

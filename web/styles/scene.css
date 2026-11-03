@@ -15,19 +15,23 @@ body {
 .office .gl { display: block; width: 100%; height: 100%; touch-action: none; }
 .office .labels { position: absolute; inset: 0; pointer-events: none; }
 
-body:has(.office[data-engine="down"])::after {
-  content: "Sem conexão com o Docker — luzes apagadas";
-  position: fixed;
+.office[data-message]:not([data-message=""])::after {
+  content: attr(data-message);
+  position: absolute;
   left: 50%;
   top: 50%;
+  z-index: 5;
   translate: -50% -50%;
+  max-width: min(560px, calc(100% - 32px));
   padding: 12px 18px;
   background: #3b0d0d;
   color: #fecaca;
   font: 700 15px var(--font-px);
+  text-align: center;
   box-shadow: 0 0 0 4px var(--line);
   pointer-events: none;
 }
+.office[data-engine="reconnecting"]::after { background: #3b2f0d; color: #fde68a; }
 
 /* ───────── Etiqueta acima da cabeça ───────── */
 
@@ -86,6 +90,8 @@ body:has(.office[data-engine="down"])::after {
   justify-content: center;
   align-items: center;
   gap: 6px;
+  /* sem isso o left: 50% limita a barra a metade da tela e o "Pixel" quebra de linha */
+  width: max-content;
   max-width: calc(100vw - 32px);
   padding: 8px 10px;
   background: rgb(35 39 56 / 0.92);
@@ -135,6 +141,29 @@ body:has(.office[data-engine="down"])::after {
 .tooltip dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0; }
 .tooltip dt { color: var(--muted); }
 .tooltip dd { margin: 0; overflow-wrap: anywhere; }
+
+/* ───────── Busca ───────── */
+
+.cameras .search {
+  width: 150px;
+  padding: 5px 8px;
+  border: 0;
+  background: #161a26;
+  color: var(--ink);
+  font: 12px var(--font-ui);
+  box-shadow: 0 0 0 2px var(--line);
+}
+.cameras .search:focus { outline: 2px solid #2563eb; outline-offset: 1px; }
+.cameras .search[data-miss="1"] { box-shadow: 0 0 0 2px #ef4444; }
+
+/* ───────── Selo de modo (AO VIVO / DEMO) ───────── */
+
+.mode { margin-left: 8px; padding: 2px 7px; font: 700 11px var(--font-ui); letter-spacing: 0.04em; vertical-align: middle; }
+.mode[data-kind="live"] { background: #14532d; color: #86efac; }
+.mode[data-kind="live"]::before { content: "● "; animation: blink 1.6s steps(1, end) infinite; }
+.mode[data-kind="demo"] { background: #3f3f46; color: #e4e4e7; }
+.mode[data-kind="error"] { background: #7f1d1d; color: #fecaca; }
+.demo[hidden] { display: none; }
 
 /* ───────── Botão Log (contador de novidades) ───────── */
 
@@ -217,6 +246,7 @@ body.wallpaper .logpanel { display: none; }
 
 @media (max-width: 720px) {
   .cameras .hint { display: none; }
+  .cameras .search { width: 100%; }
   .logpanel { top: 12px; bottom: 120px; }
   .tooltip { width: 240px; }
 }

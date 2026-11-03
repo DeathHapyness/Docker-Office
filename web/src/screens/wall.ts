@@ -355,32 +355,48 @@ export class WallClock extends CanvasPanel {
 }
 
 /** Paisagem urbana vista pelas janelas (textura compartilhada). */
-export function skylineTexture(): THREE.CanvasTexture {
+/** Vista da janela; `paint(night)` redesenha a mesma textura (dia: céu azul; noite: escuro com janelas acesas). */
+export function skylineTexture(): THREE.CanvasTexture & { paint(night: boolean): void } {
   const cv = document.createElement('canvas');
   cv.width = 256;
   cv.height = 192;
   const c = cv.getContext('2d')!;
-  const g = c.createLinearGradient(0, 0, 0, 192);
-  g.addColorStop(0, '#7cc0ef');
-  g.addColorStop(1, '#d6ecfa');
-  c.fillStyle = g;
-  c.fillRect(0, 0, 256, 192);
-  c.fillStyle = 'rgb(255 255 255 / 0.85)';
-  for (const [x, y, w] of [[30, 30, 50], [150, 22, 70], [200, 50, 40]] as const) {
-    c.fillRect(x, y, w, 8);
-    c.fillRect(x + 8, y - 6, w - 20, 6);
-  }
-  let x = 0, i = 0;
-  while (x < 256) {
-    const bw = 18 + ((i * 37) % 30), bh = 60 + ((i * 53) % 90);
-    c.fillStyle = ['#64748b', '#475569', '#7b8794', '#556170'][i % 4]!;
-    c.fillRect(x, 192 - bh, bw, bh);
-    c.fillStyle = 'rgb(255 236 179 / 0.7)';
-    for (let wy = 192 - bh + 6; wy < 186; wy += 9) for (let wx = x + 3; wx < x + bw - 4; wx += 6) if ((wx * 7 + wy * 3 + i) % 5 < 2) c.fillRect(wx, wy, 3, 4);
-    x += bw + 2;
-    i++;
-  }
-  const t = new THREE.CanvasTexture(cv);
+  const t = new THREE.CanvasTexture(cv) as THREE.CanvasTexture & { paint(night: boolean): void };
   t.colorSpace = THREE.SRGBColorSpace;
+  t.paint = (night: boolean): void => {
+    const g = c.createLinearGradient(0, 0, 0, 192);
+    g.addColorStop(0, night ? '#0b1026' : '#7cc0ef');
+    g.addColorStop(1, night ? '#28304f' : '#d6ecfa');
+    c.fillStyle = g;
+    c.fillRect(0, 0, 256, 192);
+    if (night) {
+      c.fillStyle = '#f8fafc';
+      for (let k = 0; k < 40; k++) c.fillRect((k * 97) % 256, (k * 53) % 90, 1, 1);
+      c.fillStyle = '#f1f5f9';
+      c.beginPath(); c.arc(206, 34, 12, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#0b1026';
+      c.beginPath(); c.arc(212, 30, 11, 0, Math.PI * 2); c.fill();
+    } else {
+      c.fillStyle = 'rgb(255 255 255 / 0.85)';
+      for (const [x, y, w] of [[30, 30, 50], [150, 22, 70], [200, 50, 40]] as const) {
+        c.fillRect(x, y, w, 8);
+        c.fillRect(x + 8, y - 6, w - 20, 6);
+      }
+    }
+    let x = 0, i = 0;
+    while (x < 256) {
+      const bw = 18 + ((i * 37) % 30), bh = 60 + ((i * 53) % 90);
+      c.fillStyle = night ? ['#1e2537', '#171d2c', '#232b3f', '#1a2133'][i % 4]! : ['#64748b', '#475569', '#7b8794', '#556170'][i % 4]!;
+      c.fillRect(x, 192 - bh, bw, bh);
+      c.fillStyle = night ? 'rgb(255 214 120 / 0.95)' : 'rgb(255 236 179 / 0.7)';
+      for (let wy = 192 - bh + 6; wy < 186; wy += 9) {
+        for (let wx = x + 3; wx < x + bw - 4; wx += 6) if ((wx * 7 + wy * 3 + i) % 5 < (night ? 1.4 : 2)) c.fillRect(wx, wy, 3, 4);
+      }
+      x += bw + 2;
+      i++;
+    }
+    t.needsUpdate = true;
+  };
+  t.paint(false);
   return t;
 }

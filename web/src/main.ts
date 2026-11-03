@@ -1,15 +1,41 @@
 import type { CharacterProfile } from './characters/types.js';
-import type { ContainerView, VisualState } from './model.js';
+import type { ContainerView } from './model.js';
 import { OfficeScene, type CameraPreset } from './scene/office-scene.js';
 import { Tooltip } from './ui/tooltip.js';
 import { LogPanel } from './ui/log-panel.js';
-import { mockContainers } from './demo/mock.js';
+import { Search } from './ui/search.js';
+import { Notifier } from './ui/notify.js';
+import { runDemo } from './demo/run.js';
+import { LiveSource, probe } from './net/live.js';
 
-const MB = 1024 * 1024;
+const TOKEN_KEY = 'docker-office:token';
+
+/** Token de acesso: vem uma vez na URL (?token=), fica salvo neste navegador e sai da barra de endereço. */
+function takeToken(params: URLSearchParams): string {
+  const fromUrl = params.get('token');
+  if (fromUrl) {
+    try { localStorage.setItem(TOKEN_KEY, fromUrl); } catch { /* modo privado: segue só nesta aba */ }
+    params.delete('token');
+    const q = params.toString();
+    history.replaceState(null, '', location.pathname + (q ? `?${q}` : '') + location.hash);
+    return fromUrl;
+  }
+  try { return localStorage.getItem(TOKEN_KEY) ?? ''; } catch { return ''; }
+}
+
+function setMode(text: string, kind: 'live' | 'demo' | 'error', title = ''): void {
+  const el = document.getElementById('mode')!;
+  el.textContent = text;
+  el.dataset.kind = kind;
+  el.title = title;
+}
 
 async function main(): Promise<void> {
   const res = await fetch('config/characters.json');
   const { profiles } = (await res.json()) as { profiles: CharacterProfile[] };
+
+  const params = new URLSearchParams(location.search);
+  const token = takeToken(params);
 
   const host = document.getElementById('office')!;
   const office = new OfficeScene(host, profiles);
@@ -17,15 +43,12 @@ async function main(): Promise<void> {
   office.onHover = (c, a, ev) => tooltip.show(c, a, ev);
   (window as unknown as { office: OfficeScene }).office = office; // depuração no console
 
-  const containers: ContainerView[] = mockContainers.map((c) => ({ ...c }));
-  const sync = (): void => office.sync(containers);
-  sync();
-
   const logPanel = new LogPanel(office.log, document.getElementById('log-btn') as HTMLButtonElement);
   logPanel.onPick = (id) => office.focusOn(id);
+  new Notifier(office.log, document.getElementById('notify-btn') as HTMLButtonElement);
+  const search = new Search(document.getElementById('search') as HTMLInputElement, () => office.directory());
+  search.onPick = (id) => office.focusOn(id);
 
-  // Parâmetros de URL: ?cam=top|iso|side|below|free  &focus=<nome do container>
-  const params = new URLSearchParams(location.search);
   // ?wallpaper=1 → papel de parede (sem interface, câmera girando, 20 FPS). &fps=N &orbit=0
   if (params.has('wallpaper') && params.get('wallpaper') !== '0') {
     document.body.classList.add('wallpaper');
@@ -35,8 +58,38 @@ async function main(): Promise<void> {
   }
   const cam = params.get('cam') as CameraPreset | null;
   if (cam) office.setPreset(cam);
-  const focus = params.get('focus');
-  if (focus) office.focusOn(containers.find((c) => c.name === focus)?.id ?? focus);
+  const time = params.get('time');
+  if (time === 'day' || time === 'night') office.forceTime(time);
+
+  // ?focus=<nome do container>: aplicado assim que o container existir
+  let focus = params.get('focus');
+  const applyFocus = (list: readonly ContainerView[]): void => {
+    if (!focus) return;
+    const c = list.find((x) => x.name === focus || x.id.startsWith(focus!));
+    if (c && office.focusOn(c.id)) focus = null;
+  };
+
+  /* Fonte dos dados: servidor ao vivo, ou demonstração se não houver backend */
+  const health = params.get('demo') === '1' ? undefined : await probe(token);
+  if (health === 'unauthorized') {
+    setMode('SEM ACESSO', 'error', 'Abra o endereço com ?token=SEU_TOKEN');
+    office.setEngine('down', 'token inválido ou ausente');
+    host.dataset.message = 'Token inválido ou ausente — abra com ?token=…';
+  } else if (health?.mode === 'live') {
+    setMode('AO VIVO', 'live', `Docker Office ${health.version}`);
+    const live = new LiveSource(token, {
+      onContainers: (list) => { office.sync(list); applyFocus(list); },
+      onEngine: (s, reason) => office.setEngine(s, reason),
+      onLink: (up) => {
+        if (!up) office.setEngine('reconnecting', 'sem conexão com o servidor do Docker Office');
+        setMode(up ? 'AO VIVO' : 'RECONECTANDO', up ? 'live' : 'error');
+      },
+    });
+    live.start();
+  } else {
+    setMode('DEMO', 'demo', 'Dados simulados: nenhum servidor com acesso ao Docker respondeu');
+    applyFocus(runDemo(office, host));
+  }
 
   /* Câmeras */
   const camBar = document.getElementById('cameras')!;
@@ -56,71 +109,6 @@ async function main(): Promise<void> {
     markCam();
   });
   setInterval(markCam, 500);
-
-  /* Simulação de estados (substituída pelo backend real nas próximas etapas) */
-  document.getElementById('demo')!.addEventListener('click', (ev) => {
-    const b = (ev.target as HTMLElement).closest<HTMLButtonElement>('button[data-set]');
-    if (!b) return;
-    const v = b.dataset.set!;
-    if (v === 'offline') {
-      const down = host.dataset.engine !== 'down';
-      office.setEngine(down ? 'down' : 'connected');
-      b.setAttribute('aria-pressed', String(down));
-      return;
-    }
-    const states: VisualState[] = ['working', 'busy', 'stopped', 'error'];
-    for (const c of containers) {
-      const pickState = v === 'mix' ? states[Math.floor(Math.random() * 4)]! : v === 'idle' || v === 'active' ? 'working' : (v as VisualState);
-      apply(c, pickState, v === 'idle' ? 0.3 : v === 'active' ? 25 : undefined);
-    }
-    sync();
-  });
-
-  // Métricas simuladas a cada 3 s (como fará o metrics.batch do backend).
-  setInterval(() => {
-    for (const c of containers) {
-      if (c.dockerState !== 'running') continue;
-      const cpu = c.metrics?.cpu ?? 1;
-      const jitter = cpu < 2 ? cpu : cpu * (0.9 + Math.random() * 0.2);
-      c.metrics = { cpu: Math.min(100, jitter), memBytes: (c.metrics?.memBytes ?? 120 * MB) * (0.99 + Math.random() * 0.02) };
-    }
-    sync();
-  }, 3000);
-}
-
-function apply(c: ContainerView, s: VisualState, cpu?: number): void {
-  c.visualState = s;
-  c.reason = undefined;
-  const now = new Date().toISOString();
-  switch (s) {
-    case 'working':
-      c.dockerState = 'running';
-      c.health = c.health ? 'healthy' : undefined;
-      c.startedAt ??= now;
-      c.metrics = { cpu: cpu ?? (Math.random() < 0.5 ? 0.4 : 20), memBytes: c.metrics?.memBytes ?? 150 * MB };
-      c.lastEvent = { action: 'start', at: now };
-      break;
-    case 'busy':
-      c.dockerState = 'running';
-      c.metrics = { cpu: 75 + Math.random() * 20, memBytes: c.metrics?.memBytes ?? 300 * MB };
-      break;
-    case 'stopped':
-      c.dockerState = 'exited';
-      c.exitCode = 0;
-      c.metrics = undefined;
-      c.startedAt = undefined;
-      c.reason = 'Parado (exit 0)';
-      c.lastEvent = { action: 'stop', at: now };
-      break;
-    case 'error':
-      c.dockerState = 'exited';
-      c.exitCode = 1;
-      c.metrics = undefined;
-      c.reason = 'Caiu! exit 1';
-      c.restartCount = (c.restartCount ?? 0) + 1;
-      c.lastEvent = { action: 'die', at: now };
-      break;
-  }
 }
 
 main().catch((err) => {

@@ -136,14 +136,14 @@ export class EventLog {
     }
   }
 
-  engine(status: 'connected' | 'reconnecting' | 'down'): void {
+  engine(status: 'connected' | 'reconnecting' | 'down', reason?: string): void {
     const map = {
       connected: ['Docker Engine conectado — luzes acesas', 'ok'],
       reconnecting: ['Reconectando ao Docker Engine…', 'warn'],
       down: ['Sem conexão com o Docker Engine — luzes apagadas', 'error'],
     } as const;
     const [text, level] = map[status];
-    this.add({ kind: 'engine', level, text });
+    this.add({ kind: 'engine', level, text, detail: status === 'connected' ? undefined : reason });
   }
 }
 
