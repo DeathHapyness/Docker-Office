@@ -7,3 +7,9 @@ services:
     environment:
       - APP_KEY=${SPEEDTEST_APP_KEY}
       - SPEEDTEST_SCHEDULE=
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  default:
+    name: media_network
+    external: true

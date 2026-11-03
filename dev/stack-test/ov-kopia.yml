@@ -11,3 +11,9 @@ services:
       - ${DATA_DIR}/kopia/cache:/app/cache
       - ${DATA_DIR}/kopia/logs:/app/logs
       - ${DATA_DIR}/kopia/repository:/repository
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  default:
+    name: media_network
+    external: true

@@ -1,3 +1,9 @@
 services:
   jellyfin:
     restart: "no"
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  default:
+    name: media_network
+    external: true

@@ -5,3 +5,9 @@ services:
       - "1053:53/tcp"
       - "1053:53/udp"
       - "8181:80/tcp"
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  default:
+    name: media_network
+    external: true

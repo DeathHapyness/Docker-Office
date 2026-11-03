@@ -4,3 +4,9 @@ services:
     ports: !override
       - "127.0.0.1:3044:3000"
       - "127.0.0.1:222:22"
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  forgejo:
+    name: media_network
+    external: true

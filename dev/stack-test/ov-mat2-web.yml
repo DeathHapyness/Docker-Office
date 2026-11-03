@@ -6,3 +6,9 @@ services:
     ports: !override
       - "127.0.0.1:8282:8080"
     volumes: !reset []
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  default:
+    name: media_network
+    external: true

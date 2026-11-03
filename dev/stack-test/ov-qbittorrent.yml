@@ -5,3 +5,9 @@ services:
       - "127.0.0.1:8080:8080"
       - "127.0.0.1:6881:6881"
       - "127.0.0.1:6881:6881/udp"
+
+# todos na mesma rede: cada pasta criando a sua esgota os pools de IP do Docker
+networks:
+  default:
+    name: media_network
+    external: true

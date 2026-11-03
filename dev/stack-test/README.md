@@ -13,6 +13,8 @@ dev/stack-test/stack.sh down    # derruba tudo
 O que os overrides mudam (só para teste):
 
 - `restart: "no"` em tudo — nada volta sozinho depois de um reboot.
+- Todos na rede `media_network` (menos o ntopng, cujo `redis` colidiria com o do Immich). Uma rede por pasta
+  esgotava os pools de IP do Docker (`all predefined address pools have been fully subnetted`).
 - Portas novas publicadas **só em `127.0.0.1`** (Juice Shop é propositalmente vulnerável; File Browser, n8n,
   qBittorrent e Forgejo nascem sem senha configurada). AdGuard usa 1053 (53 é do systemd-resolved).
 - `test.env` (fora do git) define `DATA_DIR`/`MEDIA_DIR` em `self-hosted-media-server/data/` (ignorado pelo git
