@@ -1,0 +1,147 @@
+body {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.office {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.office .gl { display: block; width: 100%; height: 100%; touch-action: none; }
+.office .labels { position: absolute; inset: 0; pointer-events: none; }
+
+body:has(.office[data-engine="down"])::after {
+  content: "Sem conexão com o Docker — luzes apagadas";
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  padding: 12px 18px;
+  background: #3b0d0d;
+  color: #fecaca;
+  font: 700 15px var(--font-px);
+  box-shadow: 0 0 0 4px var(--line);
+  pointer-events: none;
+}
+
+/* ───────── Etiqueta acima da cabeça ───────── */
+
+.label {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.label .tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  background: #fffaf0;
+  color: #1f2330;
+  font: 700 11px/1.2 var(--font-px);
+  box-shadow: 0 0 0 2px var(--line), inset 0 -2px 0 var(--accent);
+  white-space: nowrap;
+}
+
+.label .dot { width: 7px; height: 7px; }
+.label[data-state="error"] .dot { animation: blink 0.6s steps(1, end) infinite; }
+.label.hover .tag { box-shadow: 0 0 0 2px var(--line), 0 0 0 4px var(--accent); }
+
+.label .bubble {
+  position: relative;
+  margin: 0;
+  padding: 3px 8px;
+  max-width: 180px;
+  background: #fff;
+  color: #1f2330;
+  font: 600 11px/1.25 var(--font-ui);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 0 0 2px var(--line);
+}
+
+.label .bubble:empty { display: none; }
+.label[data-state="error"] .bubble { background: #fee2e2; color: #7f1d1d; }
+.label[data-state="busy"] .bubble { background: #fef3c7; color: #78350f; }
+.label[data-state="stopped"] .bubble { background: #e0e7ff; color: #3730a3; }
+
+
+/* ───────── Câmeras ───────── */
+
+.cameras {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  translate: -50% 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 10px;
+  background: rgb(35 39 56 / 0.92);
+  box-shadow: 0 0 0 3px var(--line), 4px 4px 0 rgb(0 0 0 / 0.35);
+}
+
+.cameras button,
+.demo button {
+  padding: 5px 10px;
+  border: 0;
+  background: #31374d;
+  color: var(--ink);
+  font: 600 12px var(--font-ui);
+  cursor: pointer;
+  box-shadow: 0 0 0 2px var(--line), inset 0 -3px 0 #23283a;
+}
+
+.cameras button:hover,
+.demo button:hover { background: #3c4360; }
+.cameras button[aria-pressed="true"],
+.demo button[aria-pressed="true"] { background: #2563eb; box-shadow: 0 0 0 2px var(--line), inset 0 -3px 0 #1e40af; }
+.cameras .sep { width: 2px; height: 20px; background: var(--line); }
+.cameras .hint { flex-basis: 100%; margin: 2px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
+
+/* ───────── Painel de detalhes (hover) ───────── */
+
+.tooltip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  width: 290px;
+  padding: 12px 14px;
+  background: #1f2333;
+  color: var(--ink);
+  font: 12px/1.4 var(--font-ui);
+  box-shadow: 0 0 0 3px var(--line), inset 0 4px 0 var(--accent), 6px 6px 0 rgb(0 0 0 / 0.4);
+  pointer-events: none;
+}
+
+.tooltip[hidden] { display: none; }
+.tooltip header { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
+.tooltip h3 { margin: 0; font: 700 15px/1.2 var(--font-px); }
+.tooltip .sub { margin: 0; color: var(--muted); }
+.tooltip .state { margin: 8px 0; padding: 5px 8px; background: rgb(0 0 0 / 0.25); }
+.tooltip .state b { color: var(--dot); }
+.tooltip dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0; }
+.tooltip dt { color: var(--muted); }
+.tooltip dd { margin: 0; overflow-wrap: anywhere; }
+
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (max-width: 720px) {
+  .cameras .hint { display: none; }
+  .tooltip { width: 240px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label .dot { animation: none !important; }
+}
