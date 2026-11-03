@@ -1,0 +1,28 @@
+{
+  "name": "docker-office",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Monitoramento Docker com visual de escritório 3D voxel: cada container é um personagem",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DeathHapyness/Docker-Office.git"
+  },
+  "scripts": {
+    "build:web": "tsc -p web/tsconfig.json",
+    "watch:web": "tsc -p web/tsconfig.json --watch",
+    "serve": "node scripts/serve.mjs",
+    "dev": "npm run build:web && npm run serve"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/three": "0.187.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "three": "0.187.0"
+  }
+}

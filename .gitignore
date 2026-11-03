@@ -1,0 +1,9 @@
+node_modules/
+web/build/
+*.log
+.env
+*.env
+!*.env.example
+dev/stack-test/test.env
+.serena/
+.claude/
