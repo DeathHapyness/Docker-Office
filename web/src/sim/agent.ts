@@ -7,7 +7,7 @@
  *   working → CPU ≥ limiar: digita na mesa | CPU baixa (ocioso): café, janela, conversa, manias…
  */
 import * as THREE from 'three';
-import type { Rig } from '../characters/rig.js';
+import type { Face, Rig } from '../characters/rig.js';
 import type { CharacterProfile, Signature } from '../characters/types.js';
 import type { ContainerView, VisualState } from '../model.js';
 import type { DeskSlot, Spot, SpotKind } from '../office/layout.js';
@@ -67,6 +67,10 @@ export class Agent {
   private walkPhase = 0;
   private moving = 0; // 0 parado · 1 andando · 2 correndo
   private rotY = 0;
+  /** Ângulo mostrado (segue rotY suavemente). */
+  private viewY = NaN;
+  private phase = 0;
+  private blinkT = 0;
   private sitting: number | null = null;
   private pose: Pose = 'stand';
   private held: Held = null;
@@ -84,6 +88,8 @@ export class Agent {
   ) {
     this.id = profile.id + ':' + desk.x.toFixed(2) + desk.z.toFixed(2);
     this.rand = mulberry32(seed);
+    this.phase = this.rand() * 20;
+    this.blinkT = 1 + this.rand() * 4;
     rig.root.position.set(desk.seat.x, 0, desk.seat.z);
     this.mug = propMesh({ kind: 'mug', color: '#f5f5f5' }, 0.6);
     this.heldProp = propMesh(profile.prop, 0.55);
@@ -335,7 +341,11 @@ export class Agent {
       if (step === dist) this.path.shift();
     }
     this.moving = task.run ? 2 : 1;
-    this.walkPhase += dt * speed * 6.5;
+    // Cadência casada com a velocidade: cada passo (meio ciclo) cobre o que o corpo andou, então
+    // os pés não deslizam.
+    const leg = HIP;
+    const stepLen = 2 * leg * Math.sin(this.stride(task.run === true));
+    this.walkPhase += (dt * Math.PI * speed) / stepLen;
     if (!this.path.length) {
       this.moving = 0;
       this.cur = undefined;
@@ -363,6 +373,11 @@ export class Agent {
     }
   }
   private typeSpeed = 10;
+
+  /** Abertura da passada (rad). */
+  private stride(run: boolean): number {
+    return run ? 0.95 : 0.55;
+  }
 
   private sitAtDesk(): void {
     this.position.set(this.desk.seat.x, 0, this.desk.seat.z);
@@ -393,36 +408,53 @@ export class Agent {
 
   private animate(dt: number, t: number): void {
     const r = this.rig;
-    const k = 1 - Math.exp(-dt * 12);
-    const j = { legL: 0, legR: 0, armLx: 0, armRx: 0, armLz: 0, armRz: 0, headX: 0, headY: 0, bodyX: 0, lift: 0 };
+    // Andando, as juntas seguem o ciclo quase sem atraso (senão a passada encurta e o pé desliza)
+    const k = 1 - Math.exp(-dt * (this.moving ? 30 : 12));
+    const T = t + this.phase; // cada personagem no seu ritmo (não ficam sincronizados)
+    const j = { legL: 0, legR: 0, armLx: 0, armRx: 0, armLz: 0, armRz: 0, headX: 0, headY: 0, headZ: 0, bodyX: 0, bodyZ: 0, lift: 0 };
     const sit = this.sitting !== null && this.moving === 0;
 
     if (this.moving) {
-      const amp = this.moving === 2 ? 1 : 0.6;
-      const s = Math.sin(this.walkPhase);
+      const run = this.moving === 2;
+      const amp = this.stride(run);
+      const s = Math.sin(this.walkPhase), c = Math.cos(this.walkPhase);
       j.legL = amp * s;
       j.legR = -amp * s;
       j.armLx = -amp * 0.85 * s;
       j.armRx = amp * 0.85 * s;
-      j.lift = Math.abs(Math.cos(this.walkPhase)) * (this.moving === 2 ? 0.06 : 0.03);
-      j.bodyX = this.moving === 2 ? 0.18 : 0.03;
-    } else {
-      if (sit) j.legL = j.legR = -Math.PI / 2;
       j.armLz = -0.06;
       j.armRz = 0.06;
-      j.lift = Math.sin(t * 2) * 0.004;
+      // corpo sobe quando a perna de apoio passa na vertical (2× por ciclo)
+      j.lift = (Math.abs(c) - 0.5) * (run ? 0.05 : 0.02);
+      j.bodyX = run ? 0.18 : 0.03;
+      j.bodyZ = s * (run ? 0.015 : 0.02); // leve balanço lateral
+      j.headZ = -j.bodyZ * 0.8;
+    } else {
+      if (sit) j.legL = j.legR = -Math.PI / 2;
+      // Respiração e pequenas mudanças de apoio/olhar quando nada mais mexe
+      const breath = Math.sin(T * 1.7);
+      j.armLz = -0.06 - breath * 0.012;
+      j.armRz = 0.06 + breath * 0.012;
+      j.lift = breath * 0.004;
+      if (!sit) {
+        j.bodyZ = Math.sin(T * 0.45) * 0.022;
+        j.headZ = -j.bodyZ * 0.6;
+      }
+      j.headY = Math.sin(T * 0.31) * 0.14 + Math.sin(T * 0.83) * 0.05;
+      j.headX = Math.sin(T * 0.53) * 0.04;
       switch (this.pose) {
         case 'type': {
           const s = this.typeSpeed;
           j.armLx = -1.15 + 0.12 * Math.max(0, Math.sin(t * s));
           j.armRx = -1.15 + 0.12 * Math.max(0, Math.sin(t * s + Math.PI));
-          j.headX = 0.12;
-          j.headY = 0.3;
+          j.headX = 0.12 + Math.sin(T * 0.7) * 0.03;
+          j.headY = 0.3 + Math.sin(T * 0.4) * 0.06;
           break;
         }
         case 'sleep':
           j.bodyX = 0.35;
-          j.headX = 0.55 + Math.sin(t * 1.3) * 0.04;
+          j.headX = 0.55 + Math.sin(T * 1.3) * 0.04;
+          j.headY = 0;
           j.armLx = j.armRx = -0.9;
           break;
         case 'panic':
@@ -434,61 +466,68 @@ export class Agent {
           j.headY = 0.35 * Math.sin(t * 9);
           break;
         case 'drink': {
-          const sip = Math.max(0, Math.sin(t * 1.1));
+          const sip = Math.max(0, Math.sin(T * 1.1));
           j.armRx = -1.1 - 0.9 * sip;
           j.headX = -0.2 * sip;
+          j.headY *= 0.3;
           break;
         }
         case 'look':
           j.armLx = j.armRx = 0.35;
           j.armLz = 0.15;
           j.armRz = -0.15;
-          j.headY = 0.25 * Math.sin(t * 0.5);
+          j.headY = 0.25 * Math.sin(T * 0.5);
           break;
         case 'talk':
-          j.armRx = -0.5 - 0.45 * Math.abs(Math.sin(t * 3));
-          j.armLx = -0.3 - 0.3 * Math.abs(Math.sin(t * 2.2 + 1));
-          j.headX = 0.08 * Math.sin(t * 4);
+          j.armRx = -0.5 - 0.45 * Math.abs(Math.sin(T * 3));
+          j.armLx = -0.3 - 0.3 * Math.abs(Math.sin(T * 2.2 + 1));
+          j.headX = 0.08 * Math.sin(T * 4);
           break;
         case 'stretch':
-          j.armLx = j.armRx = -2.9 + 0.2 * Math.sin(t * 2);
+          j.armLx = j.armRx = -2.9 + 0.2 * Math.sin(T * 2);
           j.bodyX = -0.12;
+          j.headX = -0.25;
+          j.headY = 0;
           break;
         case 'flex': {
-          const pump = Math.sin(t * 3);
+          const pump = Math.sin(T * 3);
           j.armLz = -(2.2 + 0.2 * pump);
           j.armRz = 2.2 + 0.2 * pump;
           j.lift = 0.02 * Math.max(0, pump);
+          j.headY = 0.3 * Math.sin(T * 0.7);
           break;
         }
         case 'point':
-          j.armRx = -1.55 + 0.08 * Math.sin(t * 2);
+          j.armRx = -1.55 + 0.08 * Math.sin(T * 2);
           j.headY = -0.2;
           break;
         case 'film':
           j.armLx = j.armRx = -1.35;
           j.armLz = 0.2;
           j.armRz = -0.2;
+          j.headY *= 0.4;
           break;
         case 'guard':
           j.armLx = j.armRx = -1.2;
           j.armLz = 0.65;
           j.armRz = -0.65;
-          j.headY = 0.4 * Math.sin(t * 0.6);
+          j.headY = 0.4 * Math.sin(T * 0.6);
           break;
         case 'watch': {
           j.bodyX = sit ? -0.12 : 0;
-          const eat = Math.max(0, Math.sin(t * 0.9));
+          const eat = Math.max(0, Math.sin(T * 0.9));
           j.armRx = -0.4 - 1.2 * eat;
           j.armLx = -0.4;
+          j.headY *= 0.3;
           break;
         }
         case 'dance': {
-          const beat = t * 7;
+          const beat = T * 7;
           j.armLz = -(1.2 + 0.9 * Math.max(0, Math.sin(beat)));
           j.armRz = 1.2 + 0.9 * Math.max(0, Math.sin(beat + Math.PI));
           j.legL = 0.35 * Math.max(0, Math.sin(beat));
           j.legR = 0.35 * Math.max(0, Math.sin(beat + Math.PI));
+          j.bodyZ = 0.08 * Math.sin(beat / 2);
           j.lift = Math.abs(Math.sin(beat)) * 0.06;
           j.headY = 0.25 * Math.sin(beat / 2);
           break;
@@ -497,25 +536,42 @@ export class Agent {
           break;
       }
     }
-    if (this.lookAt !== null && !this.moving) j.headY = clampAngle(this.lookAt - this.rotY, 1.1);
 
-    r.legL.rotation.x += (j.legL - r.legL.rotation.x) * k;
-    r.legR.rotation.x += (j.legR - r.legR.rotation.x) * k;
-    r.armL.rotation.x += (j.armLx - r.armL.rotation.x) * k;
-    r.armR.rotation.x += (j.armRx - r.armR.rotation.x) * k;
-    r.armL.rotation.z += (j.armLz - r.armL.rotation.z) * k;
-    r.armR.rotation.z += (j.armRz - r.armR.rotation.z) * k;
-    r.head.rotation.x += (j.headX - r.head.rotation.x) * k;
-    r.head.rotation.y += (j.headY - r.head.rotation.y) * k;
-    r.body.rotation.x += (j.bodyX - r.body.rotation.x) * k;
+    // Andando, o corpo aponta para onde vai; parado, gira suave (sem estalar ao chegar ou sentar)
+    if (Number.isNaN(this.viewY)) this.viewY = this.rotY;
+    this.viewY = this.moving ? this.rotY : turnTowards(this.viewY, this.rotY, dt * 6);
+    if (this.lookAt !== null && !this.moving) j.headY = clampAngle(this.lookAt - this.viewY, 1.1);
+
+    const ease = (o: THREE.Object3D, axis: 'x' | 'y' | 'z', v: number): void => {
+      o.rotation[axis] += (v - o.rotation[axis]) * k;
+    };
+    ease(r.legL, 'x', j.legL);
+    ease(r.legR, 'x', j.legR);
+    ease(r.armL, 'x', j.armLx);
+    ease(r.armR, 'x', j.armRx);
+    ease(r.armL, 'z', j.armLz);
+    ease(r.armR, 'z', j.armRz);
+    ease(r.head, 'x', j.headX);
+    ease(r.head, 'y', j.headY);
+    ease(r.head, 'z', j.headZ);
+    ease(r.body, 'x', j.bodyX);
+    ease(r.body, 'z', j.bodyZ);
     const baseY = sit ? (this.sitting ?? 0) - HIP + 0.02 : 0;
     r.body.position.y += (baseY + j.lift - r.body.position.y) * Math.min(1, k * 1.5);
-    r.root.rotation.y = this.rotY;
+    r.root.rotation.y = this.viewY;
     if (r.cape) {
-      const target = this.moving ? 0.25 + 0.25 * this.moving : sit ? 0.45 : 0.05;
-      r.cape.rotation.x += (target + Math.sin(t * 3) * 0.03 - r.cape.rotation.x) * k;
+      // andando a capa só descola um pouco e ondula no ritmo dos passos; correndo, esvoaça
+      const target = this.moving === 2 ? 0.55 : this.moving ? 0.15 : sit ? 0.45 : 0.05;
+      const flutter = this.moving ? Math.sin(this.walkPhase * 2) * (this.moving === 2 ? 0.08 : 0.04) : Math.sin(T * 3) * 0.03;
+      r.cape.rotation.x += (target + flutter - r.cape.rotation.x) * Math.min(k, 0.25);
     }
-    r.setFace(this.pose === 'sleep' ? 'closed' : this.pose === 'panic' ? 'shock' : 'open');
+
+    // Piscadas a cada 2–6 s
+    this.blinkT -= dt;
+    if (this.blinkT <= 0) this.blinkT = 2 + this.rand() * 4;
+    let face: Face = this.pose === 'sleep' ? 'closed' : this.pose === 'panic' ? 'shock' : 'open';
+    if (face === 'open' && this.blinkT < 0.12) face = 'closed';
+    r.setFace(face);
   }
 }
 

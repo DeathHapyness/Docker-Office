@@ -7,6 +7,7 @@ import { Search } from './ui/search.js';
 import { Notifier } from './ui/notify.js';
 import { runDemo } from './demo/run.js';
 import { LiveSource, probe } from './net/live.js';
+import { HOLIDAYS, HOLIDAY_NAME, type Holiday } from './util/calendar.js';
 import { ensureAccess, saveToken, savedToken } from './ui/access.js';
 
 /** Token vindo uma vez na URL (?token=): fica salvo neste navegador e sai da barra de endereço. */
@@ -27,6 +28,33 @@ function setMode(text: string, kind: 'live' | 'demo' | 'error', title = ''): voi
   el.textContent = text;
   el.dataset.kind = kind;
   el.title = title;
+}
+
+/**
+ * Decoração por data e contagem do Ano Novo vêm ligadas. Pela URL:
+ *   ?decor=0 desliga · ?decor=natal|anonovo|carnaval|pascoa|namorados|junina|independencia|halloween força um tema
+ *   ?countdown=0              desliga o painel de LED (aparece só de 25/12 até a virada, e no dia 1º)
+ *   ?date=AAAA-MM-DD[THH:MM[:SS]]  simula a data/hora do escritório (para testar as datas)
+ */
+function applyCalendar(office: OfficeScene, params: URLSearchParams): void {
+  const d = params.get('decor');
+  const decor = d === '0' ? null : d && HOLIDAYS.includes(d as Holiday) ? (d as Holiday) : 'auto';
+  const date = params.get('date');
+  const simulated = date ? office.clock.simulate(date) : false;
+  office.configure({ decor, countdown: params.get('countdown') !== '0' });
+  if (!simulated && (decor === 'auto' || decor === null)) return;
+  // etiqueta só quando a data é simulada ou o tema foi forçado
+  const el = document.getElementById('preview')!;
+  el.hidden = false;
+  const paint = (): void => {
+    const a = office.activeFeatures;
+    const parts = ['SIMULAÇÃO'];
+    if (a.holiday) parts.push(HOLIDAY_NAME[a.holiday]);
+    if (simulated) parts.push(office.clock.now().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
+    el.textContent = parts.join(' · ');
+  };
+  setTimeout(paint, 1500);
+  setInterval(paint, 5000);
 }
 
 async function main(): Promise<void> {
@@ -58,6 +86,7 @@ async function main(): Promise<void> {
   }
   const cam = params.get('cam') as CameraPreset | null;
   if (cam) office.setPreset(cam);
+  applyCalendar(office, params);
   const time = params.get('time');
   if (time === 'day' || time === 'night') office.forceTime(time);
 

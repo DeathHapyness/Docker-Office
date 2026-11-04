@@ -9,8 +9,14 @@ export class NavGrid {
   readonly cols: number;
   readonly rows: number;
   private readonly blocked: Uint8Array;
+  readonly width: number;
+  readonly depth: number;
+  readonly cell: number;
 
-  constructor(readonly width: number, readonly depth: number, readonly cell = 0.25) {
+  constructor(width: number, depth: number, cell = 0.25) {
+    this.width = width;
+    this.depth = depth;
+    this.cell = cell;
     this.cols = Math.ceil(width / cell);
     this.rows = Math.ceil(depth / cell);
     this.blocked = new Uint8Array(this.cols * this.rows);
@@ -88,17 +94,37 @@ export class NavGrid {
     const cells: number[] = [];
     for (let i = goal; i !== -1; i = came[i]!) cells.push(i);
     cells.reverse();
-    // Remove pontos colineares para um caminhar mais natural.
+
+    // "Puxa o barbante": de cada ponto, pula direto para o mais distante que dá para ver em linha
+    // reta (com folga para o corpo). Troca o zigue-zague de 45° da grade por retas naturais.
+    const center = (i: number): P2 => ({ x: ((i % cols) + 0.5) * cell, z: (Math.floor(i / cols) + 0.5) * cell });
+    const freeAt = (x: number, z: number): boolean => {
+      const c = Math.floor(x / cell), r = Math.floor(z / cell);
+      if (c < 0 || r < 0 || c >= cols || r >= rows) return false;
+      return free(r * cols + c);
+    };
+    const clear = (a: P2, b: P2): boolean => {
+      const dx = b.x - a.x, dz = b.z - a.z, len = Math.hypot(dx, dz);
+      if (len < 1e-6) return true;
+      const nx = (-dz / len) * 0.12, nz = (dx / len) * 0.12; // folga lateral de 12 cm
+      const n = Math.ceil(len / (cell * 0.3));
+      for (let k = 0; k <= n; k++) {
+        const x = a.x + (dx * k) / n, z = a.z + (dz * k) / n;
+        if (!freeAt(x, z) || !freeAt(x + nx, z + nz) || !freeAt(x - nx, z - nz)) return false;
+      }
+      return true;
+    };
+    const way: P2[] = [...cells.slice(1, -1).map(center), to];
     const pts: P2[] = [];
-    let prevDir = '';
-    for (let k = 1; k < cells.length - 1; k++) {
-      const a = cells[k - 1]!, b = cells[k]!, c = cells[k + 1]!;
-      const d1 = `${(b % cols) - (a % cols)},${Math.floor(b / cols) - Math.floor(a / cols)}`;
-      const d2 = `${(c % cols) - (b % cols)},${Math.floor(c / cols) - Math.floor(b / cols)}`;
-      if (d1 !== d2 || d1 !== prevDir) pts.push({ x: ((b % cols) + 0.5) * cell, z: (Math.floor(b / cols) + 0.5) * cell });
-      prevDir = d2;
+    let anchor: P2 = from;
+    let i = 0;
+    while (i < way.length) {
+      let j = way.length - 1;
+      while (j > i && !clear(anchor, way[j]!)) j--;
+      pts.push(way[j]!);
+      anchor = way[j]!;
+      i = j + 1;
     }
-    pts.push(to);
     return pts;
   }
 }

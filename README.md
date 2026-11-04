@@ -54,6 +54,13 @@ serviço.
 - **Avisos:** notificação do navegador quando um container entra em erro (opcional; no máximo 1 a cada
   2 min por container).
 - **Dia e noite:** a vista da janela e a luz seguem a hora local (`?time=day|night` força um dos dois).
+- **Datas comemorativas:** o escritório se decora sozinho no Natal (árvore, pisca-pisca, guirlanda), Ano
+  Novo, Carnaval, Páscoa, Dia dos Namorados, Festa Junina, Independência e Halloween.
+- **Contagem para o Ano Novo:** nos 7 dias antes da virada, o relógio da parede vira um painel de LED de
+  7 segmentos contando dias, horas, minutos e segundos (dourado e piscando no último minuto; no dia 1º,
+  "FELIZ ANO NOVO").
+- **Movimento natural:** passada casada com a velocidade (sem pé deslizando), caminho em linha reta
+  desviando dos móveis, giros suaves, piscadas, respiração e cada personagem no seu próprio ritmo.
 - **Detalhes no hover:** estado Docker, uptime, CPU, RAM, reinícios, código de saída, imagem, portas e
   último evento.
 
@@ -86,7 +93,7 @@ Requer Node.js ≥ 22.
 npm install
 npm run dev          # compila o frontend e sobe o servidor, lendo o Docker local
 npm run demo         # mesmo servidor, mas com dados simulados (não toca no Docker)
-npm test             # testes do classificador, métricas, eventos e parser
+npm test             # testes do classificador, métricas, eventos, parser, calendário e rotas
 ```
 
 Em desenvolvimento o servidor usa o socket local (`/var/run/docker.sock`), então seu usuário precisa estar
@@ -96,6 +103,9 @@ na 8420; `PORT=…` muda). Parâmetros de URL úteis:
 - `?cam=iso|top|side|below|free`: câmera inicial
 - `&focus=<nome-do-container>`: já começa seguindo um personagem
 - `?demo=1`: força os dados simulados
+- `?date=2026-12-31T23:59`: simula data e hora (para ver as decorações e a contagem do Ano Novo)
+- `?decor=natal|anonovo|carnaval|pascoa|namorados|junina|independencia|halloween`: força uma decoração;
+  `?decor=0` desliga. `?countdown=0` desliga o painel de LED
 - `?token=…`: token de acesso, se você usa `DOCKER_OFFICE_TOKEN` (fica salvo no navegador e some da barra de endereço)
 
 Variáveis de ambiente do servidor: `PORT` (8420), `HOST` (0.0.0.0), `DOCKER_HOST` (`unix://…` ou

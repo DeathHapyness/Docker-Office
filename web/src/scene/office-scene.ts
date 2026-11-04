@@ -9,6 +9,9 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { ContainerView } from '../model.js';
 import type { CharacterProfile } from '../characters/types.js';
 import { buildRig } from '../characters/rig.js';
+import { buildDecor, type Decor, type Walls } from '../office/seasonal.js';
+import { LedCountdown, ledPanel } from '../screens/led-countdown.js';
+import { OfficeClock, holidayOn, newYearCountdown, type Holiday } from '../util/calendar.js';
 import { resolveProfile } from '../characters/resolve.js';
 import { genericProfile, prettyName } from '../characters/generic.js';
 import { computeLayout, type OfficeLayout, type Spot, type SpotKind } from '../office/layout.js';
@@ -22,6 +25,14 @@ import { U, voxelMaterial } from '../three/voxel.js';
 import { posterTexture } from '../screens/posters.js';
 import { EventLog } from '../state/event-log.js';
 import { MetricsBoard, NewsTv, WallClock, skylineTexture, type OfficeEvent, type OfficeSnapshot } from '../screens/wall.js';
+
+/** Recursos ligados por data (dá para desligar ou forçar pela URL). */
+export interface Features {
+  /** 'auto' = pela data; um tema = forçado; null = sem decoração. */
+  decor: 'auto' | Holiday | null;
+  /** Painel de LED com a contagem para o Ano Novo (só nos 7 dias antes). */
+  countdown: boolean;
+}
 
 export type CameraPreset = 'free' | 'top' | 'iso' | 'side' | 'below' | 'follow';
 
@@ -59,6 +70,15 @@ export class OfficeScene {
   private readonly board = new MetricsBoard();
   private readonly clockFace = new WallClock();
   private readonly sky = skylineTexture();
+  private features: Features = { decor: 'auto', countdown: true };
+  /** Data do escritório (real, ou simulada com ?date=). */
+  readonly clock = new OfficeClock();
+  private walls4?: Walls;
+  private decor: Decor | null = null;
+  private calT = -1;
+  private readonly led = new LedCountdown();
+  private ledObj?: THREE.Object3D;
+  private analogClock?: THREE.Object3D;
   /** Log de tudo que mudou nos containers e no Engine (painel "Log" e ticker da TV). */
   readonly log = new EventLog();
   private readonly events: OfficeEvent[] = [];
@@ -184,6 +204,16 @@ export class OfficeScene {
     this.controls.autoRotateSpeed = 0.35;
   }
 
+  /** Liga/desliga a decoração por data e a contagem do Ano Novo. */
+  configure(f: Partial<Features>): void {
+    this.features = { ...this.features, ...f };
+    this.calT = -1;
+  }
+
+  get activeFeatures(): Readonly<Features> & { holiday: Holiday | null } {
+    return { ...this.features, holiday: this.decor?.holiday ?? null };
+  }
+
   /** Força dia ou noite (?time=day|night); sem isso segue o relógio local. */
   forceTime(t: 'day' | 'night'): void {
     this.forced = t;
@@ -242,6 +272,9 @@ export class OfficeScene {
   private rebuild(usable: Array<{ c: ContainerView; p: CharacterProfile }>): void {
     const firstBuild = !this.layout;
     const oldHistory = new Map([...this.entries].map(([id, e]) => [id, e.history]));
+    this.decor?.dispose();
+    this.decor = null;
+    this.calT = -1;
     this.scene.remove(this.office);
     this.office.traverse((o) => {
       if (o instanceof CSS2DObject) o.element.remove();
@@ -393,6 +426,7 @@ export class OfficeScene {
     const front = mkWall(W + 0.4, 0.2, W / 2, D + 0.1, (c) => c.z > D);
     const left = mkWall(0.2, D, -0.1, D / 2, (c) => c.x < 0);
     const right = mkWall(0.2, D, W + 0.1, D / 2, (c) => c.x > W);
+    this.walls4 = { back, left, right, front };
 
     const posters = new Map<number, THREE.Texture>();
     for (const f of L.fixtures) {
@@ -409,7 +443,17 @@ export class OfficeScene {
         case 'plant': obj = bigPlant(); break;
         case 'whiteboard': obj = whiteboard(); parent = back; break;
         case 'printer': obj = printer(); break;
-        case 'clock': obj = wallClock(this.clockFace.texture); parent = back; break;
+        case 'clock': {
+          obj = wallClock(this.clockFace.texture);
+          parent = back;
+          this.analogClock = obj;
+          // painel de LED no mesmo lugar, escondido fora da semana do Ano Novo
+          const led = (this.ledObj = ledPanel(this.led.texture));
+          led.position.set(x, 2.45, 0.02);
+          led.visible = false;
+          back.add(led);
+          break;
+        }
         case 'window': obj = windowPane(1.9, 1.4, this.sky); obj.position.y = 0.95; parent = left; x = 0.01; break;
         case 'door': obj = door(); parent = right; x = W - 0.01; break;
         case 'poster': {
@@ -478,6 +522,7 @@ export class OfficeScene {
     this.news.update(snap, t);
     this.board.update(snap, t);
     this.clockFace.update(snap, t);
+    this.seasonal(t);
 
     // Câmera
     if (this.tween) {
@@ -524,6 +569,29 @@ export class OfficeScene {
     if (++this.frameNo % 3 === 0 || this.frameNo < 3) this.renderer.shadowMap.needsUpdate = true;
     this.renderer.render(this.scene, this.camera);
     this.labels.render(this.scene, this.camera);
+  }
+
+  /** Decoração da data e contagem do Ano Novo (checadas 1×/s; LED redesenha só quando muda). */
+  private seasonal(t: number): void {
+    const f = this.features;
+    const now = this.clock.now();
+    if (this.calT < 0 || t - this.calT >= 1) {
+      this.calT = t;
+      const want = f.decor === 'auto' ? holidayOn(now) : f.decor;
+      if ((this.decor?.holiday ?? null) !== want) {
+        this.decor?.dispose();
+        this.decor = null;
+        if (want && this.walls4) {
+          this.decor = buildDecor(want, this.layout, this.walls4);
+          this.office.add(this.decor.root);
+        }
+      }
+    }
+    this.decor?.update(t);
+    const cd = f.countdown ? newYearCountdown(now) : null;
+    if (this.ledObj) this.ledObj.visible = cd !== null;
+    if (this.analogClock) this.analogClock.visible = cd === null;
+    if (cd) this.led.update(cd, now);
   }
 
   /* ───────── Mouse ───────── */
