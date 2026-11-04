@@ -1,4 +1,5 @@
 /** Configuração por variáveis de ambiente (nada de arquivo com segredo no repositório). */
+import { resolve } from 'node:path';
 import { parseDockerHost, type DockerTarget } from './docker/api.ts';
 
 export interface Config {
@@ -11,6 +12,8 @@ export interface Config {
   demo: boolean;
   metricsMs: number;
   maxClients: number;
+  /** Pasta gravável para auth.json (volume no Docker). */
+  dataDir: string;
 }
 
 function int(name: string, def: number, min: number, max: number): number {
@@ -32,5 +35,6 @@ export function loadConfig(): Config {
     demo: /^(1|true|yes)$/i.test(process.env.DOCKER_OFFICE_DEMO ?? ''),
     metricsMs: int('METRICS_INTERVAL_MS', 3000, 1000, 60_000),
     maxClients: int('MAX_CLIENTS', 50, 1, 1000),
+    dataDir: resolve(process.env.DOCKER_OFFICE_DATA || resolve(import.meta.dirname, '..', '..', 'data')),
   };
 }

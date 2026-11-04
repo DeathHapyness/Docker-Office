@@ -24,3 +24,6 @@ GEMINI.md
 .continue/
 .github/copilot-instructions.md
 docs/superpowers/
+
+# Dados locais do servidor (auth.json com o hash da senha)
+/data/

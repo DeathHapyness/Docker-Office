@@ -7,20 +7,19 @@ import { Search } from './ui/search.js';
 import { Notifier } from './ui/notify.js';
 import { runDemo } from './demo/run.js';
 import { LiveSource, probe } from './net/live.js';
+import { ensureAccess, saveToken, savedToken } from './ui/access.js';
 
-const TOKEN_KEY = 'docker-office:token';
-
-/** Token de acesso: vem uma vez na URL (?token=), fica salvo neste navegador e sai da barra de endereço. */
+/** Token vindo uma vez na URL (?token=): fica salvo neste navegador e sai da barra de endereço. */
 function takeToken(params: URLSearchParams): string {
   const fromUrl = params.get('token');
   if (fromUrl) {
-    try { localStorage.setItem(TOKEN_KEY, fromUrl); } catch { /* modo privado: segue só nesta aba */ }
+    saveToken(fromUrl);
     params.delete('token');
     const q = params.toString();
     history.replaceState(null, '', location.pathname + (q ? `?${q}` : '') + location.hash);
     return fromUrl;
   }
-  try { return localStorage.getItem(TOKEN_KEY) ?? ''; } catch { return ''; }
+  return savedToken();
 }
 
 function setMode(text: string, kind: 'live' | 'demo' | 'error', title = ''): void {
@@ -35,7 +34,8 @@ async function main(): Promise<void> {
   const { profiles } = (await res.json()) as { profiles: CharacterProfile[] };
 
   const params = new URLSearchParams(location.search);
-  const token = takeToken(params);
+  // primeira visita: escolher senha ou aberto; depois, login se houver senha (não vale no ?demo=1)
+  const token = params.get('demo') === '1' ? '' : await ensureAccess(takeToken(params));
 
   const host = document.getElementById('office')!;
   const office = new OfficeScene(host, profiles);
@@ -72,9 +72,10 @@ async function main(): Promise<void> {
   /* Fonte dos dados: servidor ao vivo, ou demonstração se não houver backend */
   const health = params.get('demo') === '1' ? undefined : await probe(token);
   if (health === 'unauthorized') {
-    setMode('SEM ACESSO', 'error', 'Abra o endereço com ?token=SEU_TOKEN');
-    office.setEngine('down', 'token inválido ou ausente');
-    host.dataset.message = 'Token inválido ou ausente — abra com ?token=…';
+    saveToken(''); // sessão vencida ou senha trocada: recarregar mostra o login de novo
+    setMode('SEM ACESSO', 'error', 'Recarregue a página para entrar de novo');
+    office.setEngine('down', 'senha ou token inválido');
+    host.dataset.message = 'Sessão expirada — recarregue a página para entrar de novo';
   } else if (health?.mode === 'live') {
     setMode('AO VIVO', 'live', `Docker Office ${health.version}`);
     const live = new LiveSource(token, {

@@ -254,3 +254,54 @@ body.wallpaper .logpanel { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .label .dot { animation: none !important; }
 }
+
+/* ───────── Acesso (primeira visita / senha) ───────── */
+
+.access {
+  width: min(380px, calc(100vw - 32px));
+  padding: 22px 22px 16px;
+  border: 0;
+  background: var(--panel);
+  color: var(--ink);
+  font: 14px/1.45 var(--font-ui);
+  box-shadow: 0 0 0 3px var(--line), 0 0 0 5px #3b4260, 0 18px 50px rgb(0 0 0 / 0.55);
+}
+.access:modal { overscroll-behavior: contain; }
+.access::backdrop {
+  background: rgb(10 12 20 / 0.72);
+  backdrop-filter: blur(3px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.access h2 { margin: 0 0 6px; font: 700 18px var(--font-px); }
+.access p { margin: 0 0 12px; color: var(--muted); }
+.access__form { display: grid; gap: 10px; }
+.access__field { display: grid; gap: 5px; }
+.access__field input[type="password"],
+.access__field input[type="text"] {
+  padding: 8px 10px;
+  border: 0;
+  background: #161a26;
+  color: var(--ink);
+  font: 14px var(--font-ui);
+  box-shadow: 0 0 0 2px var(--line);
+}
+.access__field input:focus-visible { outline: 2px solid #2563eb; outline-offset: 1px; }
+.access__show { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; cursor: pointer; }
+.access__hint { font-size: 12px; margin: -4px 0 0 !important; }
+.access button {
+  padding: 9px 12px;
+  border: 0;
+  font: 600 14px var(--font-ui);
+  cursor: pointer;
+  box-shadow: 0 0 0 2px var(--line);
+}
+.access button:disabled { opacity: 0.6; cursor: progress; }
+.access__primary { background: #2563eb; color: #fff; }
+.access__primary:hover:not(:disabled) { background: #1d4ed8; }
+.access__secondary { width: 100%; margin-bottom: 8px; background: #2f3549; color: var(--ink); }
+.access__secondary:hover:not(:disabled) { background: #3a4159; }
+.access__or { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--muted); font-size: 12px; }
+.access__or::before, .access__or::after { content: ""; flex: 1; height: 2px; background: var(--line); }
+.access__error { min-height: 1.2em; margin: 8px 0 0 !important; color: var(--err) !important; font-size: 13px; }
+.access__error:empty { visibility: hidden; }

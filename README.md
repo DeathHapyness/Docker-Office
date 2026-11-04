@@ -49,6 +49,7 @@ serviço.
   para seguir o personagem.
 - **Papel de parede do navegador:** `?wallpaper=1` tira a interface e gira a câmera devagar a 20 FPS. A
   extensão em [`extras/newtab-extension`](extras/newtab-extension) coloca isso em toda nova aba.
+- **Acesso sem complicação:** na primeira visita você escolhe criar uma senha ou deixar aberto.
 - **Busca** (atalho `/`): digite o nome e a câmera vai até o personagem.
 - **Avisos:** notificação do navegador quando um container entra em erro (opcional; no máximo 1 a cada
   2 min por container).
@@ -95,10 +96,10 @@ na 8420; `PORT=…` muda). Parâmetros de URL úteis:
 - `?cam=iso|top|side|below|free`: câmera inicial
 - `&focus=<nome-do-container>`: já começa seguindo um personagem
 - `?demo=1`: força os dados simulados
-- `?token=…`: token de acesso (fica salvo no navegador e some da barra de endereço)
+- `?token=…`: token de acesso, se você usa `DOCKER_OFFICE_TOKEN` (fica salvo no navegador e some da barra de endereço)
 
 Variáveis de ambiente do servidor: `PORT` (8420), `HOST` (0.0.0.0), `DOCKER_HOST` (`unix://…` ou
-`tcp://…`), `DOCKER_OFFICE_TOKEN`, `DOCKER_OFFICE_DEMO=1`, `METRICS_INTERVAL_MS` (3000) e `MAX_CLIENTS` (50).
+`tcp://…`), `DOCKER_OFFICE_TOKEN`, `DOCKER_OFFICE_DATA` (pasta do `auth.json`; `./data` no dev), `DOCKER_OFFICE_DEMO=1`, `METRICS_INTERVAL_MS` (3000) e `MAX_CLIENTS` (50).
 
 Por padrão o servidor escuta em `0.0.0.0` (acesso pela rede local). Para restringir à própria máquina:
 
@@ -112,12 +113,24 @@ HOST=127.0.0.1 npm run serve
 git clone https://github.com/DeathHapyness/Docker-Office.git
 cd Docker-Office
 cp deploy/.env.example deploy/.env
-sed -i "s/^DOCKER_OFFICE_TOKEN=.*/DOCKER_OFFICE_TOKEN=$(openssl rand -hex 24)/" deploy/.env   # gera o token
-grep TOKEN deploy/.env   # anote o token
 docker compose --env-file deploy/.env -f deploy/compose.yml up -d --build
 ```
 
-Abra `http://<ip-do-servidor>:8420/?token=<seu-token>` uma vez. O navegador guarda o token.
+Abra `http://<ip-do-servidor>:8420`. Na **primeira visita** o Docker Office pergunta:
+
+- **Proteger com senha:** cada navegador pede a senha uma vez e lembra por 90 dias.
+- **Deixar aberto:** qualquer pessoa na sua rede vê o painel, sem login.
+
+A escolha fica no volume `data` (só o hash scrypt da senha, nunca a senha). Para trocar a senha ou voltar à
+pergunta, apague o arquivo e reinicie:
+
+```sh
+docker exec docker-office-docker-office-1 rm /data/auth.json && docker restart docker-office-docker-office-1
+```
+
+> Quem abrir a página primeiro faz a escolha. Abra logo depois de subir, antes de divulgar o endereço.
+> Prefere um token fixo? Defina `DOCKER_OFFICE_TOKEN` (16+ caracteres) no `deploy/.env`: a pergunta some e
+> o login pede esse token.
 
 O compose sobe dois containers:
 
@@ -153,7 +166,8 @@ fora do ar, ela mostra um aviso com o botão **Tentar de novo**.
 1. Suba o servidor.
 2. Em `chrome://extensions`, ligue o **Modo do desenvolvedor**.
 3. Clique em **Carregar sem compactação** e escolha `extras/newtab-extension`.
-4. Nas opções da extensão, informe `http://<ip-do-servidor>:8420/?wallpaper=1&token=<seu-token>`.
+4. Nas opções da extensão, informe `http://<ip-do-servidor>:8420/?wallpaper=1`. Com senha, o login aparece
+   na primeira nova aba e fica lembrado.
 
 Na primeira nova aba o navegador pergunta se você quer manter a mudança: escolha **Manter**.
 
@@ -214,11 +228,17 @@ Node 22.18+ (*type stripping*), sem `dockerode`, sem `ws` e sem passo de build. 
   permissões **somente de leitura** (`CONTAINERS=1 EVENTS=1 PING=1 VERSION=1 POST=0`), numa rede interna
   sem porta publicada. Testado: `POST /containers/…/stop` e `GET /images` voltam `403`.
 - A interface é **somente leitura**: não há start, stop nem exec. O servidor só chama `GET` na API Docker.
-- **Token:** com `DOCKER_OFFICE_TOKEN` (mínimo 16 caracteres), `/api/*` exige o token (comparação em
-  tempo constante). Sem ele, qualquer um na LAN vê nomes, imagens e portas dos seus containers.
+- **Senha:** escolhida na primeira visita e guardada como hash scrypt com sal (arquivo `0600`). O login
+  devolve uma sessão assinada com HMAC, válida por 90 dias; trocar a senha derruba todas. São no máximo 10
+  tentativas erradas a cada 5 min por IP. Os POSTs exigem `application/json` e a mesma origem, o que barra
+  formulários de outros sites.
+- **Token fixo (opcional):** com `DOCKER_OFFICE_TOKEN` (mínimo 16 caracteres), `/api/*` exige o token
+  (comparação em tempo constante) e a escolha inicial não aparece.
+- **Aberto:** se escolher sem senha, qualquer um na LAN vê nomes, imagens e portas dos seus containers.
 - Não exponha o Docker Office à internet. Ele foi pensado para a LAN.
-- O servidor estático só aceita `GET`/`HEAD`, bloqueia path traversal e envia os cabeçalhos `nosniff` e
-  `no-referrer`. O `frame-ancestors` só deixa a própria página e extensões de navegador embutirem o app.
+- O servidor só aceita `POST` em `/api/setup` e `/api/login`; os arquivos estáticos só aceitam `GET`/`HEAD`.
+  Ele bloqueia path traversal e envia os cabeçalhos `nosniff` e `no-referrer`. O `frame-ancestors` só deixa
+  a própria página e extensões de navegador embutirem o app.
 - Os dados vindos do Docker (nomes, labels, imagens) são inseridos no DOM só como texto (`textContent`).
 
 ## Licença

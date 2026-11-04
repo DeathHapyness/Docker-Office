@@ -1,5 +1,6 @@
 # Docker Office no servidor:  docker compose -f deploy/compose.yml up -d --build
-# Abra http://<ip-do-servidor>:8420   (papel de parede: /?wallpaper=1)
+# Abra http://<ip-do-servidor>:8420 — a primeira visita escolhe senha ou acesso aberto
+# (papel de parede: /?wallpaper=1)
 #
 # O app NUNCA monta o socket do Docker: fala com um docker-socket-proxy que só libera
 # leitura (listar containers, eventos, stats) numa rede interna sem acesso externo.
@@ -33,9 +34,11 @@ services:
     depends_on: [socket-proxy]
     environment:
       DOCKER_HOST: tcp://socket-proxy:2375
-      # Recomendado na LAN: token com 16+ caracteres (gere com: openssl rand -hex 16).
-      # Acesse uma vez com http://<ip>:8420/?token=SEU_TOKEN (fica salvo no navegador).
+      # Opcional. Sem ele, a primeira visita pergunta: criar senha ou deixar aberto.
+      # Com ele (16+ caracteres), vale o token fixo e a pergunta não aparece.
       DOCKER_OFFICE_TOKEN: ${DOCKER_OFFICE_TOKEN:-}
+    volumes:
+      - data:/data   # escolha de acesso + hash da senha (apagar auth.json = perguntar de novo)
     ports:
       - "${DOCKER_OFFICE_PORT:-8420}:8420"   # use "127.0.0.1:8420:8420" para só a própria máquina
     networks: [docker-api, web]
@@ -48,6 +51,9 @@ services:
     mem_limit: 192m
     cpus: 0.5
     pids_limit: 64
+
+volumes:
+  data: {}
 
 networks:
   docker-api:
